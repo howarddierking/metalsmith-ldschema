@@ -1,0 +1,79 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "s": "http://schema.org/",
+    "@vocab": "http://schema.howarddierking.com/",
+    "@base": "http://schema.howarddierking.com/"
+  },
+  "@graph": [
+    {
+      "@id": "/Bug",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Bug",
+      "rdfs:comment": "A unit of work. Traditionally tied to a failure in a software application."
+    },
+    {
+      "@id": "/title",
+      "@type": "rdf:Property",
+      "rdfs:label": "title",
+      "rdfs:comment": "The name of the item.",
+      "s:rangeIncludes": [
+        { "@id": "s:Text" }
+      ],
+      "s:domainIncludes": [
+        { "@id": "/Bug" }
+      ]
+    },
+    {
+      "@id": "/status",
+      "@type": "rdf:Property",
+      "rdfs:label": "status",
+      "rdfs:comment": "An identifier describing the state of an object in a workflow.",
+      "s:rangeIncludes": [
+        { "@id": "s:Text" }
+      ],
+      "s:domainIncludes": [
+        { "@id": "/Bug" }
+      ]
+    },
+    {
+      "@id": "/description",
+      "@type": "rdf:Property",
+      "rdfs:label": "description",
+      "rdfs:comment": "A more detailed explanation than what may be contained in an ojbect's name.",
+      "s:rangeIncludes": [
+        { "@id": "s:Text" }
+      ],
+      "s:domainIncludes": [
+        { "@id": "/Bug" }
+      ]
+    },
+    {
+      "@id": "/assignedTo",
+      "@type": "rdf:Property",
+      "rdfs:label": "assignedTo",
+      "rdfs:comment": "Zero or more agents that are assigned to a unit of work.",
+      "s:rangeIncludes": [
+        { "@id": "/Collaborator" }
+      ],
+      "s:domainIncludes": [
+        { "@id": "/Bug" }
+      ]
+    },
+    {
+      "@id": "/watchedBy",
+      "@type": "rdf:Property",
+      "rdfs:label": "watchedBy",
+      "rdfs:comment": "Zero or more agents that wish to be kept updated on the status of a unit of work.",
+      "s:rangeIncludes": [
+        { "@id": "/Collaborator" }
+      ],
+      "s:domainIncludes": [
+        { "@id": "/Bug" }
+      ]
+    }
+  ]
+}

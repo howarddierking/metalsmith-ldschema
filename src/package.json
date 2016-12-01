@@ -1,0 +1,30 @@
+{
+  "name": "metalsmith-ldschema",
+  "version": "0.0.1",
+  "description": "Metalsmith plugin for generating Web documentation for a linked data vocabulary. Inspired by https://schema.org",
+  "main": "metalsmith-ldschema.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/howarddierking/metalsmith-ldschema.git"
+  },
+  "keywords": [
+    "metalsmith",
+    "rdf",
+    "rdfs",
+    "json-ld"
+  ],
+  "author": "Howard Dierking",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/howarddierking/metalsmith-ldschema/issues"
+  },
+  "homepage": "https://github.com/howarddierking/metalsmith-ldschema#readme",
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "jsonld": "^0.4.11",
+    "ramda": "^0.22.1"
+  }
+}

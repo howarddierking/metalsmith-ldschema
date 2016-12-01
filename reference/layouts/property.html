@@ -1,0 +1,33 @@
+<% inherits('default.html') %>
+
+<div class="row">
+  <div class="col-md-12">
+    <h1><%= term.label %></h1>
+    <p><%= term.comment %></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <!-- values expected to be one of these types -->
+    <h3>Values expected to be one of these types</h3>
+    <ul>
+      <% R.forEach(p => { %>
+        <!-- TODO: should leading slash be included in the data or leave it in the template? -->
+        <li><a href="<%=p.path%>"><%= p.label %></a></li>
+      <% }, term.expectedTypes); %>
+    </ul>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <!-- used on these types -->
+    <h3>Used on these types</h3>
+    <ul>
+      <% R.forEach(p => { %>
+        <li><a href="<%=p.path%>"><%= p.label %></a></li>
+      <% }, term.usedOn); %>
+    </ul>
+  </div>
+</div>
