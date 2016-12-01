@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-ldschema-reference",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "reference schema site using metalsmith-ldschema",
   "main": "index.js",
   "scripts": {
