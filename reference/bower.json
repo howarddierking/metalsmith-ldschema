@@ -1,6 +1,6 @@
 {
-  "name": "schema.concursolutions.com",
-  "description": "Explore the data model for Concur linked data APIs",
+  "name": "schema.howarddierking.com",
+  "description": "Explore the data model for linked data APIs",
   "main": "index.js",
   "authors": [
     "Howard Dierking"

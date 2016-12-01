@@ -18,7 +18,6 @@ const rdfsFullName = R.concat('http://www.w3.org/2000/01/rdf-schema#');
 const rdfFullName = R.concat('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 const xsdFullName = R.concat('http://www.w3.org/2001/XMLSchema#');
 const dcFullName = R.concat('http://purl.org/dc/elements/1.1/');
-const concurFullName = R.concat('http://schema.concursolutions.com/');
 const schemaOrgFullName = R.concat('http://schema.org/');
 
 // {'@type': [String]} -> String
