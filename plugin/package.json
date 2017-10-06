@@ -2,7 +2,7 @@
   "name": "metalsmith-ldschema",
   "version": "0.0.3",
   "description": "Metalsmith plugin for generating Web documentation for a linked data vocabulary. Inspired by https://schema.org",
-  "main": "metalsmith-ldschema.js",
+  "main": "src/metalsmith-ldschema.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,8 +23,9 @@
   },
   "homepage": "https://github.com/howarddierking/metalsmith-ldschema#readme",
   "dependencies": {
-    "bluebird": "^3.4.6",
+    "bluebird": "^3.5.1",
     "jsonld": "^0.4.11",
-    "ramda": "^0.22.1"
+    "ramda": "^0.22.1",
+    "rdflib": "^0.16.3"
   }
 }
