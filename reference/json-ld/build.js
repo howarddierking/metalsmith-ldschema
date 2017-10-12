@@ -11,7 +11,8 @@ metalsmith(__dirname)
   .destination('./site')
   .use(ldschema({
     classLayout: 'class.html',
-    propertyLayout: 'property.html'
+    propertyLayout: 'property.html',
+    base: 'http://schema.howarddierking.com'
   }))
   .use(permalinks({
     pattern: ':title'

@@ -1,10 +1,13 @@
 const R = require('ramda');
 const jsonld = require('jsonld').promises;
 const path = require('path');
-const url = require('url');
+const { URL } = require('url');
 const P = require('bluebird');
 const rdf = require('rdflib');
 const fs = require('fs');
+
+const parseRdf = P.promisify(rdf.parse);
+
 const RDFS = rdf.Namespace('http://www.w3.org/2000/01/rdf-schema#');
 const RDF = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 const XSD = rdf.Namespace('http://www.w3.org/2001/XMLSchema#');
@@ -14,69 +17,62 @@ const SCHEMA_ORG = rdf.Namespace('http://schema.org/');
 const first = R.nth(0);
 const second = R.nth(1);
 
-const hasFileExtension =  R.curry(function(ext, fileName){
-  return path.extname(fileName) === ext;
+const rdfTypes = {
+  '.jsonld': 'application/ld+json',
+  '.ttl': 'text/turtle'
+};
+
+const hasFileExtension = R.curry(function(extensions, file){
+  let ext = path.extname(file);
+  return R.contains(ext, extensions);
 });
 
-const isRdf = R.anyPass([hasFileExtension('.jsonld'), hasFileExtension('.ttl')]);
+const fileExtension = R.curry(path.extname);
 
-// // String -> Object
-// const createRemoteTermStub = function(id){
-//   return {
-//     id: id,
-//     label: id,
-//     comment: 'Remote term',
-//     path: id
-//   };
-// };
+const mediaType = R.pipe(fileExtension, R.prop(R.__, rdfTypes));
 
-// const createClass = function(node){
-//   return {
-//     parentClasses: [],
-//     childClasses: [],
-//     properties: [],
-//     valueFor: []
-//   }
-// };
+const isRdf = hasFileExtension(R.keys(rdfTypes));
 
-// const createProperty = function(node){
-//   return {
-//     usedOn: [],
-//     expectedTypes: []
-//   }
-// };
+const pathSegments = R.split('/');
 
-// // n -> t
-// const createTerm = function(node){
-//   if(R.complement(isValidTerm)(node)){
-//     debugger;
-//     throw new Error('Node must be an rdfs:Class or rdf:Property');
-//   }
+const lastPathSegment = function(iri){ 
+  return R.last(pathSegments(new URL(iri).pathname));
+};
 
-//   let term = R.ifElse(isClass, createClass, createProperty)(node);
-//   term._source = node;
-//   term.id = id(node);
-//   term.label = firstValue(rdfsFullName('label'), node); // TODO: make functions for these accessors
-//   term.comment = firstValue(rdfsFullName('comment'), node);
-//   term.lastPathSegment = lastPathSegment(term.id);
-//   term.path = '/' + term.lastPathSegment;
-//   term.fileName = term.lastPathSegment + '.html';
+const termFile = function(iri){
+  return `${lastPathSegment(iri)}.html`;
+}
 
-//   return term;
-// };
+// (g, [k, v]) -> Promise(g) 
+const populateGraphFromFile = function(g, f){
+  let filename = first(f);
+  let fileinfo = second(f);
 
-// const createPages = R.curry(function(files, options, linkedTerms){
-//   R.forEach(t => {
-//     let outputFile = {
-//       term: t,
-//       contents: new Buffer(''),
-//       layout: isClass(t._source) ? options.classLayout : options.propertyLayout
-//     };
+  return parseRdf(
+    fileinfo.contents.toString('ascii'), 
+    g, 
+    `http://schema.howarddierking.com/${filename}`,   // what would this look like with multiple named graphs?
+    mediaType(filename));
+};
 
-//     files[t.fileName] = outputFile;
-//   }, R.values(linkedTerms));
-// });
+// g -> n -> [id, term]
+const createTermTuple = R.curry(function(graph, pathResolver, n){
+  return [n.value, 
+    {
+      id: n.value,
+      label: graph.any(n, RDFS('label'), undefined).value,
+      comment: graph.any(n, RDFS('comment'), undefined).value,
+      path: pathResolver(n.value)
+    }];
+});
 
+// naive implementation
+// TODO: more extensive version to deal with relative IRIs
+const termPath = R.curry(function(base, iri){
+  if(base && iri.startsWith(base))
+    return new URL(iri).pathname;
+  return iri;
+});
 
 const generateSite = R.curry(function(options, files, metalsmith, done){
   if(R.isNil(options))
@@ -85,71 +81,103 @@ const generateSite = R.curry(function(options, files, metalsmith, done){
     done(new TypeError('options.classLayout is required.'));
   if(R.isNil(options.propertyLayout))
     done(new TypeError('options.propertyLayout is required.'));
+  let termPathResolver = termPath(options.base);
 
-  // TODO: allow for some configuration here whereby the user can supply a specific list of files or possibly even a selection function
-  // TODO: try and make this more expressive - finding that transparent use of functions like pipe and nthArg hurt the ability to reason about the data types
+  // TODO: ensure that _any_ place where there's not a match to an existing term can be listed as the IRI
+  
+  // {filename, content} -> R.pickBy(val, key) -> pick(key) -> isRdf
+  // TODO: would the code be more straightforward to reason about if the object was just converted to pairs??
   let selectedFiles = R.pickBy(R.pipe(R.nthArg(1), isRdf), files);
 
-  let graph = rdf.graph();
+  P.reduce(R.toPairs(selectedFiles), populateGraphFromFile, rdf.graph())
+    .then(function(graph){
+      //
+      // pass 1 - create all termInfo objects
+      //
+      let classes = graph.each(undefined, RDF('type'), RDFS('Class'));
+      let properties = graph.each(undefined, RDF('type'), RDF('Property'))
 
-  // just parse the first one to see what that looks like
-  // TODO: need to see what it looks like with multiple graphs - also, what should the level of control be for the user creating the graph IRI
-  firstSelectedFile = first(R.values(selectedFiles));
+      let termCreator = createTermTuple(graph, termPathResolver);
 
-  console.info('pre');
-  console.info(firstSelectedFile.contents.toString('ascii'));
+      let classTerms = R.fromPairs(R.map(R.pipe(termCreator), classes));
+      let propertyTerms = R.fromPairs(R.map(termCreator, properties));
 
-  // TODO: investigate the best way to go about parsing the file - ideally should switch encoding to utf8 and process the buffer directly
-  rdf.parse(
-    firstSelectedFile.contents.toString('ascii'), 
-    graph, 
-    'http://schema.howarddierking.com/bug.ttl', 
-    'text/turtle');
 
-  // render pages for all the classes
-  let classes = graph.each(undefined, RDF('type'), RDFS('Class'));
+      //
+      // pass 2 - link term info objects by iterating classes
+      //
+      R.forEachObjIndexed((v, k) => {
+        let term = classTerms[v.value];
+        term.parentClasses = [];
+        term.childClasses = [];
+        term.properties = [];
+        term.valueFor = [];
 
-    console.info('post');
+        // class::parentClasses
+        let parentClasses = graph.each(v, RDFS('subClassOf'), undefined);
+        R.forEach(n => {
+          term.parentClasses.push(classTerms[n.value]);
+        }, parentClasses);
 
-  // render pages for all the properties
-  let properites = graph.each(undefined, RDF('type'), RDFS('Class'))
-    
+        // class::childClasses
+        let childClasses = graph.each(undefined, RDFS('subClassOf'), v);
+        R.forEach(n => {
+          term.childClasses.push(classTerms[n.value]);
+        }, childClasses);
 
-  // R.pipeP(extractTerms, linkTerms, createPages(files, options), done)(R.values(selectedFiles));
+        // class::properties + property::usedOn
+        let properties = graph.each(undefined, SCHEMA_ORG('domainIncludes'), v);
+        R.forEach(n => {
+          propertyTerm = propertyTerms[n.value];
+          if(!propertyTerm.usedOn)
+            propertyTerm.usedOn = [];
 
-  /**
-   * Data contract for pages
-   * 
-   * Common: (there's probably room for cleanup here)
-   * - id: String
-   * - label: String
-   * - comment: String
-   * - lastPathSegment: String
-   * - path: String
-   * - fileName: String
-   * 
-   * Class:
-   * - parentClasses: []
-   * - childClasses: []
-   * - properties: []
-   * - valueFor: [] 
-   * 
-   * Property: 
-   * - usedOn: []
-   * - expectedTypes: []
-   * 
-   */
-  
+          // add to class::properties
+          term.properties.push(propertyTerm)
+
+          // add to property::usedOn
+          propertyTerm.usedOn.push(term);
+
+          // write the term file
+          files[termFile(term.id)] = {
+            term: term,
+            contents: new Buffer(''),
+            layout: options.classLayout
+          }
+        }, properties);
+      }, classes);
+
+      R.forEachObjIndexed((v, k) => {
+        let term = propertyTerms[v.value];
+        term.expectedTypes = [];
+
+        // property::expectedTypes + class::valueFor
+        let types = graph.each(v, SCHEMA_ORG('rangeIncludes'), undefined);
+        R.forEach(n => {
+          classTerm = classTerms[n.value];
+
+          // add to property::expectedTypes
+          term.expectedTypes.push(R.defaultTo({ id: n.value, label: n.value, path: termPathResolver(n.value) }, classTerm));
+
+          // add to class::valueFor
+          if(classTerm){
+            classTerm.valueFor.push(term);
+          }
+        }, types);
+
+        // write the term file
+        files[termFile(term.id)] = {
+          term: term,
+          contents: new Buffer(''),
+          layout: options.propertyLayout
+        }
+      }, properties);
+
+
+      setImmediate(done);
+    });
 });
 
-
-
-
-
-
-
-// TODO: assign generateSite directly to module exports as currying should take care of returning the right functional signature
 module.exports = function(options){
   return generateSite(options);
 };
-

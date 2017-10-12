@@ -24,7 +24,6 @@
     "metalsmith-serve": "0.0.7",
     "metalsmith-watch": "^1.0.3",
     "qejs": "^3.0.5",
-    "ramda": "^0.22.1",
-    "rdflib": "^0.15.0"
+    "ramda": "^0.25.0"
   }
 }
