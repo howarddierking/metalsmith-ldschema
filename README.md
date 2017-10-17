@@ -1,6 +1,9 @@
 # metalsmith-ldschema
 Metalsmith plugin for generating Web documentation for a linked data vocabulary. Inspired by https://schema.org
 
+## Requirements
+* Node v8.6.0 or later
+
 ## Installation
 * Create a new static Web site using [metalsmith](http://www.metalsmith.io/)
 * `npm install --save metalsmith-ldschema`

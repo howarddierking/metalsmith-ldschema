@@ -1,0 +1,16 @@
+{
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "extends": "airbnb",
+  "plugins": [
+    "mocha"
+  ],
+  "rules": {
+    "mocha/no-exclusive-tests": "error",
+    "comma-dangle": "off",
+    "no-console": "off",
+    "arrow-body-style": [2, "always"]
+  }
+}
