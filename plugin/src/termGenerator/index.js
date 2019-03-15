@@ -1,59 +1,8 @@
-const R = require('ramda');
-const jsonld = require('jsonld').promises;
-const path = require('path');
-const { URL } = require('url');
-const P = require('bluebird');
-const rdf = require('rdflib');
-const fs = require('fs');
-
-const parseRdf = P.promisify(rdf.parse);
-
 const RDFS = rdf.Namespace('http://www.w3.org/2000/01/rdf-schema#');
 const RDF = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 const XSD = rdf.Namespace('http://www.w3.org/2001/XMLSchema#');
 const DC = rdf.Namespace('http://purl.org/dc/elements/1.1/');
 const SCHEMA_ORG = rdf.Namespace('http://schema.org/');
-
-const first = R.nth(0);
-const second = R.nth(1);
-
-const rdfTypes = {
-  '.jsonld': 'application/ld+json',
-  '.ttl': 'text/turtle'
-};
-
-const hasFileExtension = R.curry(function(extensions, file){
-  let ext = path.extname(file);
-  return R.contains(ext, extensions);
-});
-
-const fileExtension = R.curry(path.extname);
-
-const mediaType = R.pipe(fileExtension, R.prop(R.__, rdfTypes));
-
-const isRdf = hasFileExtension(R.keys(rdfTypes));
-
-const pathSegments = R.split('/');
-
-const lastPathSegment = function(iri){ 
-  return R.last(pathSegments(new URL(iri).pathname));
-};
-
-const termFile = function(iri){
-  return `${lastPathSegment(iri)}.html`;
-}
-
-// (g, [k, v]) -> Promise(g) 
-const populateGraphFromFile = function(g, f){
-  let filename = first(f);
-  let fileinfo = second(f);
-
-  return parseRdf(
-    fileinfo.contents.toString('ascii'), 
-    g, 
-    `http://schema.howarddierking.com/${filename}`,   // what would this look like with multiple named graphs?
-    mediaType(filename));
-};
 
 // g -> n -> [id, term]
 const createTermTuple = R.curry(function(graph, pathResolver, n){
@@ -75,13 +24,15 @@ const termPath = R.curry(function(base, iri){
 });
 
 const generateSite = R.curry(function(options, files, metalsmith, done){
-  if(R.isNil(options))
-    done(new TypeError('options is required.'));
-  if(R.isNil(options.classLayout))
-    done(new TypeError('options.classLayout is required.'));
-  if(R.isNil(options.propertyLayout))
-    done(new TypeError('options.propertyLayout is required.'));
-  let termPathResolver = termPath(options.base);
+
+  // TODO: is this still necessary in a more flexible rendering system?
+  // if(R.isNil(options))
+  //   done(new TypeError('options is required.'));
+  // if(R.isNil(options.classLayout))
+  //   done(new TypeError('options.classLayout is required.'));
+  // if(R.isNil(options.propertyLayout))
+  //   done(new TypeError('options.propertyLayout is required.'));
+  // let termPathResolver = termPath(options.base);
 
   // TODO: ensure that _any_ place where there's not a match to an existing term can be listed as the IRI
   
@@ -177,7 +128,3 @@ const generateSite = R.curry(function(options, files, metalsmith, done){
       setImmediate(done);
     });
 });
-
-module.exports = function(options){
-  return generateSite(options);
-};

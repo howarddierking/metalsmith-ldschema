@@ -14,23 +14,23 @@ metalsmith(__dirname)
     propertyLayout: 'property.html',
     base: 'http://schema.howarddierking.com'
   }))
-  .use(permalinks({
-    pattern: ':title'
-  }))
-  .use(layouts({
-    engine: 'qejs',
-    directory: 'layouts',
-    R: R
-  }))
-  .use(serve({
-    host: "0.0.0.0",
-    port: "8080",
-    verbose: true
-  }))
-  .use(watch({
-    pattern: '**/*',
-    livereload: true
-  }))
+  // .use(permalinks({
+  //   pattern: ':title'
+  // }))
+  // .use(layouts({
+  //   engine: 'qejs',
+  //   directory: 'layouts',
+  //   R: R
+  // }))
+  // .use(serve({
+  //   host: "0.0.0.0",
+  //   port: "8080",
+  //   verbose: true
+  // }))
+  // .use(watch({
+  //   pattern: '**/*',
+  //   livereload: true
+  // }))
   .build(function(err){
     if(err)
       console.error(err)
