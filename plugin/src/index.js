@@ -4,7 +4,7 @@ const R = require('ramda');
 // const { URL } = require('url');
 // const P = require('bluebird');
 // const rdf = require('rdflib');
-const fs = require('./fs');
+const metalsmithFs = require('./fs');
 
 
 
@@ -12,15 +12,19 @@ const fs = require('./fs');
 
 
 
+const calculateTermFiles = R.pipe(metalsmithFs.rdfFiles)
 
 
 
 
-
-
+// pipeline
+// 1) files | pick rdf files | generate terms | add term files -> files
+// 2) files | pick all non-rdf files -> files
 const generateSite = R.curry(function(options, files, metalsmith, done){
 
 debugger;
+
+  const termFiles = calculateTermFiles(files);
 
   const rdfFiles = R.pipe(R.keys, fs.rdfFiles)(files);
 
