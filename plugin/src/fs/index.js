@@ -15,6 +15,8 @@ const hasFileExtension = R.curry(function(extensions, file){
 
 // [String, Object] -> Boolean
 // I don't like this - predicate should be simpler to be more generic - (String -> Boolean)
+// 20190315: as this module is going to focus more on the metalsmith file structure, we should 
+//    change this contract to accept (v, k) as this is consistent with the metalsmith files object
 const isRdf = R.pipe(Rx.first, hasFileExtension(R.keys(graph.rdfTypes)));
 
 const isRdfFile = hasFileExtension(R.keys(graph.rdfTypes));
@@ -31,6 +33,8 @@ const isRdfFile = hasFileExtension(R.keys(graph.rdfTypes));
 // [String] -> [String]
 const rdfFiles = R.filter(isRdfFile);
 
+// {k: v} -> {k: v}
+const rdfFiles = R.pickBy(isRdf)
 
 
 module.exports = {
