@@ -1,0 +1,12 @@
+# get id, type, label, comment, domain, range from ??
+
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+
+select ?property ?domain ?range
+where 
+{ 
+    ?property rdf:type rdf:Property;  
+        rdfs:domain ?domain;
+        rdfs:range ?range .
+}

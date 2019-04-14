@@ -1,0 +1,17 @@
+@base <http://schema.test.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# reason nothing coming up may be that comment should be optional
+
+</MyClass> a rdfs:Class ;
+       rdfs:label "MyClass" .
+
+</MyOtherClass> a rdfs:Class ;
+                rdfs:label "MyOtherClass" .
+
+</description> a rdf:Property ;
+         rdfs:label "description" ;
+         rdfs:domain </MyClass>, </MyOtherClass> ;
+         rdfs:range xsd:string ;

@@ -10,13 +10,6 @@ const metalsmithFs = require('./fs');
 
 
 
-
-
-const calculateTermFiles = R.pipe(metalsmithFs.rdfFiles)
-
-
-
-
 // pipeline
 // 1) files | pick rdf files | generate terms | add term files -> files
 // 2) files | pick all non-rdf files -> files
@@ -24,9 +17,12 @@ const generateSite = R.curry(function(options, files, metalsmith, done){
 
 debugger;
 
-  const termFiles = calculateTermFiles(files);
+  const terms = R.pipe(
+    metalsmithFs.rdfFiles,
+    graph.from
+    graph.terms)(files);
 
-  const rdfFiles = R.pipe(R.keys, fs.rdfFiles)(files);
+
 
 debugger;
   // const terms = R.pipe(R.pick(rdfFiles), graph.fromFiles, gen.generateTerms);
