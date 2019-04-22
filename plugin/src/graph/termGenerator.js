@@ -71,6 +71,41 @@ const termOrProxy = R.ifElse(
     R.prop,
     proxyTerm);
 
+
+
+
+
+
+
+
+
+
+
+
+
+// TODO: look at refactoring with R.eqBy and R.eqProps
+// containsID: a -> [a] -> Boolean
+const containsID = (val, o) => {
+    debugger;
+    let ret = R.any(
+        R.propEq('id', R.prop('id', val)),
+        o);
+    return ret;
+};
+
+const uniqueAppendById = Rx.uniqueAppendWith(containsID);
+
+
+
+
+
+
+
+
+
+
+
+
 // NOTE: This section intentionally mutates the term map. The more pure approach
 //       would involve producing multiple term maps - 1 for each domain/range 
 //       row - and then merge them all back together to produce a final map. 
@@ -82,12 +117,12 @@ const domainAndRangeBinder = R.curry((termMap, qb) => {
     const rangeClass = termOrProxy(qb[QB_RANGE].value, termMap);
 
     // domain
-    property.usedOn = Rx.uniqueAppend(domainClass, property.usedOn);
-    domainClass.properties = Rx.uniqueAppend(property, domainClass.properties);
+    property.usedOn = uniqueAppendById(domainClass, property.usedOn);
+    domainClass.properties = uniqueAppendById(property, domainClass.properties);
     
     // range
-    property.expectedTypes = Rx.uniqueAppend(rangeClass, property.expectedTypes);
-    rangeClass.valueFor = Rx.uniqueAppend(property, rangeClass.valueFor);
+    property.expectedTypes = uniqueAppendById(rangeClass, property.expectedTypes);
+    rangeClass.valueFor = uniqueAppendById(property, rangeClass.valueFor);
 });
 
 // Graph -> [TermViewModel]

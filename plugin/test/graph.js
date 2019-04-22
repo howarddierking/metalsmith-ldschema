@@ -106,8 +106,6 @@ describe('graph/termGenerator', () => {
         it('should correctly set class#properties for rdfs:domain values', () => {
             const terms = termGenerator.termsFor(propsGraph);
             const myClass = R.find(R.propEq('id', TEST('MyClass').value), terms);
-debugger;
-// BUG - termGenerator adds duplicate properties if those properties have multiple range triples
             myClass.properties.length.should.equal(1);
 
             const myOtherClass = R.find(R.propEq('id', TEST('MyOtherClass').value), terms);
@@ -119,9 +117,18 @@ debugger;
             description.usedOn.length.should.equal(2);
         });
         it('should correctly set class#valueFor for rdfs:range values', () => {
-
+            const terms = termGenerator.termsFor(propsGraph);
+            const myString = R.find(R.propEq('id', TEST('MyString').value), terms);
+            myString.valueFor.length.should.equal(1);
         });
-        it('should correctly set property#expectedTypes for rdfs:range values');
+        it('should correctly set property#expectedTypes for rdfs:range values', () => {
+            // FAIL: failing because proxy objects are generated for each triple in which they are found. 
+            //       As such, R.equals is not finding them to be the same and allowing duplicates
+            const terms = termGenerator.termsFor(propsGraph);
+            const description = R.find(R.propEq('id', TEST('description').value), terms);
+debugger;
+            description.expectedTypes.length.should.equal(2);
+        });
         it('should bind classes correctly for inheritence relationships');
     })
 })
