@@ -98,11 +98,6 @@ describe('graph/termGenerator', () => {
 
             termGenerator.termsFor(termsGraph).should.deep.equal(expected);
         });
-        // it.only('should bind properties and classes correctly for domain and range values', () => {
-        //     const description = R.find(R.propEq('id'), TEST('description').value, terms);
-        //     description.usedOn.length.should.equal(2);
-        //     description.expectedTypes.should.equal(1);
-        // });
         it('should correctly set class#properties for rdfs:domain values', () => {
             const terms = termGenerator.termsFor(propsGraph);
             const myClass = R.find(R.propEq('id', TEST('MyClass').value), terms);
@@ -122,11 +117,8 @@ describe('graph/termGenerator', () => {
             myString.valueFor.length.should.equal(1);
         });
         it('should correctly set property#expectedTypes for rdfs:range values', () => {
-            // FAIL: failing because proxy objects are generated for each triple in which they are found. 
-            //       As such, R.equals is not finding them to be the same and allowing duplicates
             const terms = termGenerator.termsFor(propsGraph);
             const description = R.find(R.propEq('id', TEST('description').value), terms);
-debugger;
             description.expectedTypes.length.should.equal(2);
         });
         it('should bind classes correctly for inheritence relationships');

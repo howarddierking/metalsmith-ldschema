@@ -72,38 +72,11 @@ const termOrProxy = R.ifElse(
     proxyTerm);
 
 
+// containsID: {k: v} -> {k: v} -> Boolean
+const containsID = R.eqProps('id');
 
-
-
-
-
-
-
-
-
-
-
-// TODO: look at refactoring with R.eqBy and R.eqProps
-// containsID: a -> [a] -> Boolean
-const containsID = (val, o) => {
-    debugger;
-    let ret = R.any(
-        R.propEq('id', R.prop('id', val)),
-        o);
-    return ret;
-};
-
+// uniqueAppendById: a -> [a] -> [a]
 const uniqueAppendById = Rx.uniqueAppendWith(containsID);
-
-
-
-
-
-
-
-
-
-
 
 
 // NOTE: This section intentionally mutates the term map. The more pure approach

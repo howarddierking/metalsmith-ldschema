@@ -2,14 +2,8 @@ const should = require('chai').should();
 const Rx = require('../src/ramdaExt');
 const R = require('ramda');
 
-// containsID: a -> [a] -> Boolean
-const containsID = (val, o) => {
-    debugger;
-    let ret = R.any(
-        R.propEq('id', R.prop('id', val)),
-        o);
-    return ret;
-};
+// containsID: {k: v} -> {k: v} -> Boolean
+const containsID = R.eqProps('id');
 
 describe('ramdaExt', () => {
     describe('#uniqueAppend', () => {
@@ -24,32 +18,7 @@ describe('ramdaExt', () => {
         });
     });
 
-    describe('#safeIncludes', () => {
-        it('should return true when item is found in list', () => {
-            Rx.safeIncludes(2, [2, 3]).should.be.true;
-        });
-        it('should return false when list is nil', () => {
-            Rx.safeIncludes(2, undefined).should.be.false;
-        });
-        it('should return false when item is nil', () => {
-            Rx.safeIncludes(undefined, [1, 2]).should.be.false;
-        });
-    });
-
-    describe('#safeIncludesWith', () => {
-        it('should return false based on id property equality', () => {
-            const entry = {id: 'baz', q: 'a'};
-            const list = [{id: 'foo', q: 'b'}, {id: 'bar', q: 'c'}];
-            Rx.safeIncludesWith(containsID, entry, list).should.be.false;
-        });
-        it('should return true based on id property equality', () => {
-            const entry = {id: 'foo', q: 'a'};
-            const list = [{id: 'foo', q: 'b'}, {id: 'bar', q: 'c'}];
-            Rx.safeIncludesWith(containsID, entry, list).should.be.true;
-        });
-    });
-
-    describe.only('uniqueAppendWith', () => {
+    describe('uniqueAppendWith', () => {
         it('should append item to list when not found in the list', () => {
             const entry = {id: 'baz', q: 'a'};
             const list = [{id: 'foo', q: 'b'}, {id: 'bar', q: 'c'}];
@@ -59,7 +28,7 @@ describe('ramdaExt', () => {
         it('should not append item to list when it is already in the list', () => {
             const entry = {id: 'foo', q: 'a'};
             const list = [{id: 'foo', q: 'b'}, {id: 'bar', q: 'c'}];
-            Rx.uniqueAppend(containsID, entry, list).should.eql(list);
+            Rx.uniqueAppendWith(containsID, entry, list).should.eql(list);
         });
     });
 });
