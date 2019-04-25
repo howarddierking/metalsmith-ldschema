@@ -23,17 +23,11 @@ const appendGraph = (accum, val) => {
         mediaType(filename));
 };
 
-// {k: v} -> Promise Graph
 // TODO: try to convert to expression based on the below
+// {k: v} -> Promise Graph
 const from = (files) => {
     return P.reduce(R.toPairs(files), appendGraph, rdf.graph());
 }
-
-// const reduceP = R.curry(P.reduce);
-// const resolveP = R.curry(P.resolve);
-// const from = R.pipeP(
-//     R.pipe(R.toPairs, resolveP),
-//     reduceP(R.__, appendGraph, rdf.graph()));
 
 // String -> String 
 const mediaType = R.pipe(
