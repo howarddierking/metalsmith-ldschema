@@ -93,7 +93,8 @@ describe('graph/termGenerator', () => {
                             id: 'http://schema.test.org/MyClass',
                             type: 'class',
                             label: 'MyClass',
-                            comment: 'Detailed description about the subject.'
+                            comment: 'Detailed description about the subject.',
+                            href: 'http://schema.test.org/MyClass'
                         }];
 
             termGenerator.termsFor(termsGraph).should.deep.equal(expected);

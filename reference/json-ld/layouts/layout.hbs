@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>schema.howarddierking.com</title>
+    <title>{{ term.label }}</title>
 
     <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
@@ -26,12 +26,12 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <a href="#" class="navbar-brand">schema.howarddierking.com</a>
+          <a href="/" class="navbar-brand">schema.howarddierking.com</a>
         </div>
       </div>
     </nav>
     <div class="container">
-      <%- contents %>
+      {{ term.id }}
     </div>
 
     <script src="/components/jquery/dist/jquery.min.js"></script>

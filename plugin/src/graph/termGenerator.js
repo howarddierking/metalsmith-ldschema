@@ -57,6 +57,7 @@ const friendlyTypeName = R.cond([
 // TODO: TEST
 // isInDomain: String -> String -> Boolean
 const isInDomain = R.curry((base, id) => {
+    if(R.isNil(base) || R.isNil(id)) return false;
     return new URL(base).origin === new URL(id).origin; 
 });
 
@@ -138,6 +139,8 @@ const parentClassBinder = R.curry((termMap, qb) => {
 
 // Graph, String -> [TermViewModel]
 const generateViewModel = (g, base) => {
+    if(R.isNil(g)) return [];
+
     // get terms
     const tq = rdf.SPARQLToQuery(termsQuery, false, g);
     const tqBindings = g.querySync(tq);
@@ -164,9 +167,6 @@ const generateViewModel = (g, base) => {
     return R.values(termMap);
 };
 
-// Graph -> [TermViewModel]
-const termsFor = R.ifElse(R.isNil, R.always([]), generateViewModel);
-
 module.exports = {
-    termsFor
+    termsFor: generateViewModel
 };
