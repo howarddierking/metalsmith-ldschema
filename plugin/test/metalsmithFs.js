@@ -1,23 +1,25 @@
-const should = require('chai').should();
-const metalsmithFs_impl = require('../src/fs/impl.js');
+'use strict';
+
+require('chai').should();
+const fsImpl = require('../src/fs/impl.js');
 
 describe('metalsmithFs/impl', () => {
     describe('#hasFileExtension', () => {
         it('should return true when matching json-ld', () => {
-            metalsmithFs_impl.isRdf('file.jsonld').should.be.true;
+            fsImpl.isRdf('file.jsonld').should.be.true;
         });
         it('should return true when matching turtle', () => {
-            metalsmithFs_impl.isRdf('file.ttl').should.be.true;
+            fsImpl.isRdf('file.ttl').should.be.true;
         });
         it('should return true for matching extension regardless of path', () => {
-            metalsmithFs_impl.isRdf('/foo/bar/baz/file.ttl').should.be.true;
+            fsImpl.isRdf('/foo/bar/baz/file.ttl').should.be.true;
         });
         it('should return false when not matching provided file extensions', () => {
-           metalsmithFs_impl.isRdf('file.foo').should.be.false;
+            fsImpl.isRdf('file.foo').should.be.false;
         });
         it('should return false when input is nil', () => {
-           metalsmithFs_impl.isRdf(null).should.be.false;
-           metalsmithFs_impl.isRdf(undefined).should.be.false;
+            fsImpl.isRdf(null).should.be.false;
+            fsImpl.isRdf(undefined).should.be.false;
         });
     });
 
@@ -36,7 +38,7 @@ describe('metalsmithFs/impl', () => {
                 './src/file4.jsonld': { data: 'some data' }
             };
 
-            metalsmithFs_impl.rdfFiles(input).should.deep.equal(expected);
+            fsImpl.rdfFiles(input).should.deep.equal(expected);
         });
         it('should return an empty set if no files match RDF extensions', () => {
             const input = {
@@ -49,10 +51,10 @@ describe('metalsmithFs/impl', () => {
 
             const expected = {};
 
-            metalsmithFs_impl.rdfFiles(input).should.deep.equal(expected);
+            fsImpl.rdfFiles(input).should.deep.equal(expected);
         });
         it('should return an empty set if empty object supplied', () => {
-            metalsmithFs_impl.rdfFiles({}).should.deep.equal({});
+            fsImpl.rdfFiles({}).should.deep.equal({});
         });
     });
 
@@ -68,7 +70,7 @@ describe('metalsmithFs/impl', () => {
                 './src/file4.jsonld': 'some data'
             };
 
-            metalsmithFs_impl.filePairs(input).should.deep.equal(expected);
+            fsImpl.filePairs(input).should.deep.equal(expected);
         });
     });
 });

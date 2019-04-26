@@ -1,6 +1,8 @@
-const should = require('chai').should();
-const Rx = require('../src/ramdaExt');
+'use strict';
+
+require('chai').should();
 const R = require('ramda');
+const Rx = require('../src/ramdaExt');
 
 // containsID: {k: v} -> {k: v} -> Boolean
 const containsID = R.eqProps('id');
@@ -20,14 +22,14 @@ describe('ramdaExt', () => {
 
     describe('uniqueAppendWith', () => {
         it('should append item to list when not found in the list', () => {
-            const entry = {id: 'baz', q: 'a'};
-            const list = [{id: 'foo', q: 'b'}, {id: 'bar', q: 'c'}];
-            const expected = [{id: 'foo', q: 'b'}, {id: 'bar', q: 'c'}, {id: 'baz', q: 'a'}]
+            const entry = { id: 'baz', q: 'a' };
+            const list = [{ id: 'foo', q: 'b' }, { id: 'bar', q: 'c' }];
+            const expected = [{ id: 'foo', q: 'b' }, { id: 'bar', q: 'c' }, { id: 'baz', q: 'a' }];
             Rx.uniqueAppendWith(containsID, entry, list).should.eql(expected);
         });
         it('should not append item to list when it is already in the list', () => {
-            const entry = {id: 'foo', q: 'a'};
-            const list = [{id: 'foo', q: 'b'}, {id: 'bar', q: 'c'}];
+            const entry = { id: 'foo', q: 'a' };
+            const list = [{ id: 'foo', q: 'b' }, { id: 'bar', q: 'c' }];
             Rx.uniqueAppendWith(containsID, entry, list).should.eql(list);
         });
     });

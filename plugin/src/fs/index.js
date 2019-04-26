@@ -1,5 +1,7 @@
+'use strict';
+
 const impl = require('./impl');
 
 module.exports = {
-	rdfFiles: impl.rdfFiles
-}
+    rdfFiles: impl.rdfFiles
+};

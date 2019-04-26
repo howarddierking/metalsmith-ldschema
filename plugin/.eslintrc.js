@@ -25,7 +25,15 @@ module.exports = {
         'function-paren-newline': ['off'],
         'wrap-iife': ['error', 'inside'],
         // Require strict mode on all files
-        'strict': ['error', 'global']
+        'strict': ['error', 'global'],
+        // Allow dangling underscores to support Ramda placeholder syntax
+        'no-underscore-dangle': 'off'
     },
+    overrides: [{
+        files: ['test/**/*.js'],
+        rules: {
+            'no-unused-expressions': 'off'
+        }
+    }],
     plugins: ['prettier']
 };

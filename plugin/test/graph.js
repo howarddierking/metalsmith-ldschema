@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const rdf = require('rdflib');
@@ -21,31 +23,32 @@ describe('graph/loader', () => {
         });
         it('should throw for an unknown file extension', () => {
             (() => {
-                loader.mediaType('file.foo')
-            }).should.throw(); 
+                loader.mediaType('file.foo');
+            }).should.throw();
         });
     });
 
     describe('#from', () => {
         let input = null;
 
+        // eslint-disable-next-line no-undef
         before(() => {
             input = {
-                'bug.ttl' : {
+                'bug.ttl': {
                     contents: fs.readFileSync(path.join(__dirname, 'bug.ttl')),
                     mode: '0644'
                 },
-                'collaborator.jsonld' : {
+                'collaborator.jsonld': {
                     contents: fs.readFileSync(path.join(__dirname, 'collaborator.jsonld')),
                     mode: '0644'
                 }
-            }
+            };
         });
 
-        it('should produce a graph from different file types', (done) => {
+        it('should produce a graph from different file types', done => {
             const ret = loader.from(input);
 
-            ret.then((graph) => {
+            ret.then(graph => {
                 should.exist(graph);
                 graph.statements.length.should.equal(64);
 
@@ -62,21 +65,25 @@ describe('graph/termGenerator', () => {
         let propsGraph = null;
         beforeEach(() => {
             termsGraph = rdf.graph();
-            termsGraph.add(TEST('MyClass'), RDF('type') , RDFS('Class'));
+            termsGraph.add(TEST('MyClass'), RDF('type'), RDFS('Class'));
             termsGraph.add(TEST('MyClass'), RDFS('label'), 'MyClass');
-            termsGraph.add(TEST('MyClass'), RDFS('comment'), 'Detailed description about the subject.');
+            termsGraph.add(
+                TEST('MyClass'),
+                RDFS('comment'),
+                'Detailed description about the subject.'
+            );
 
             propsGraph = rdf.graph();
-            propsGraph.add(TEST('MyClass'), RDF('type') , RDFS('Class'));
+            propsGraph.add(TEST('MyClass'), RDF('type'), RDFS('Class'));
             propsGraph.add(TEST('MyClass'), RDFS('label'), 'MyClass');
-            propsGraph.add(TEST('MyOtherClass'), RDF('type') , RDFS('Class'));
+            propsGraph.add(TEST('MyOtherClass'), RDF('type'), RDFS('Class'));
             propsGraph.add(TEST('MyOtherClass'), RDFS('label'), 'MyOtherClass');
             propsGraph.add(TEST('description'), RDF('type'), RDF('Property'));
             propsGraph.add(TEST('description'), RDFS('label'), 'description');
             propsGraph.add(TEST('description'), RDFS('domain'), TEST('MyClass'));
             propsGraph.add(TEST('description'), RDFS('domain'), TEST('MyOtherClass'));
             propsGraph.add(TEST('description'), RDFS('range'), XSD('string'));
-            propsGraph.add(TEST('MyString'), RDF('type') , RDFS('Class'));
+            propsGraph.add(TEST('MyString'), RDF('type'), RDFS('Class'));
             propsGraph.add(TEST('MyString'), RDFS('label'), 'MyString');
             propsGraph.add(TEST('description'), RDFS('range'), TEST('MyString'));
         });
@@ -89,13 +96,15 @@ describe('graph/termGenerator', () => {
         });
         it('should set optional terms to Undefined when not present');
         it('should return expected view model for class', () => {
-            const expected = [{
-                            id: 'http://schema.test.org/MyClass',
-                            type: 'class',
-                            label: 'MyClass',
-                            comment: 'Detailed description about the subject.',
-                            href: 'http://schema.test.org/MyClass'
-                        }];
+            const expected = [
+                {
+                    id: 'http://schema.test.org/MyClass',
+                    type: 'class',
+                    label: 'MyClass',
+                    comment: 'Detailed description about the subject.',
+                    href: 'http://schema.test.org/MyClass'
+                }
+            ];
 
             termGenerator.termsFor(termsGraph).should.deep.equal(expected);
         });
@@ -125,4 +134,4 @@ describe('graph/termGenerator', () => {
         it('should bind classes correctly for inheritence relationships');
         it('should include href value that accounts for host mask');
     });
-})
+});

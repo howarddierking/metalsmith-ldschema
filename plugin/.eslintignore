@@ -1,2 +1,5 @@
 # /node_modules ignored by default, but need to specify recursively
 **/node_modules
+**/*.ttl
+**/*.jsonld
+**/*.rq
