@@ -122,5 +122,6 @@ describe('graph/termGenerator', () => {
             description.expectedTypes.length.should.equal(2);
         });
         it('should bind classes correctly for inheritence relationships');
-    })
+        it('should include href value that accounts for host mask');
+    });
 })

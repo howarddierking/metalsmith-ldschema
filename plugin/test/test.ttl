@@ -9,7 +9,8 @@
        rdfs:label "MyClass" .
 
 </MyOtherClass> a rdfs:Class ;
-                rdfs:label "MyOtherClass" .
+                rdfs:label "MyOtherClass" ;
+                rdfs:subClassOf </MyClass> .
 
 </description> a rdf:Property ;
          rdfs:label "description" ;

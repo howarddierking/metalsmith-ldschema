@@ -1,4 +1,5 @@
 const R = require('ramda');
+const url = require('url');
 const Rx = require('../ramdaExt');
 const rdf = require('rdflib');
 const P = require('bluebird');
@@ -16,13 +17,14 @@ const QB_COMMENT = '?comment';
 const QB_PROPERTY = '?property';
 const QB_DOMAIN = '?domain';
 const QB_RANGE = '?range';
+const QB_PARENT = '?parentClass';
 
 const DEFAULT_UNKNOWN = '(unknown)';
 
 const termsQuery = `prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 
-select ?term ?type ?label ?comment
+select ?term ?type ?label ?comment 
 where 
 { 
     ?term rdf:type ?type ;
@@ -30,15 +32,18 @@ where
     OPTIONAL { ?term rdfs:comment ?comment . } 
 }`;
 
-const propertiesQuery = `prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+const relsQuery = `prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 
-select ?property ?domain ?range
+select ?term ?domain ?range ?parentClass
 where 
 { 
-    ?property rdf:type rdf:Property;  
-        rdfs:domain ?domain;
-        rdfs:range ?range .
+    ?term rdf:type ?type .
+    OPTIONAL { 
+        ?term rdfs:domain ?domain;
+              rdfs:range ?range .
+    }  
+    OPTIONAL { ?term rdfs:subClassOf ?parentClass .}
 }`;
 
 // String -> 'class' | 'property' | '(unknown)'
@@ -49,19 +54,36 @@ const friendlyTypeName = R.cond([
         [R.T, R.always(DEFAULT_UNKNOWN)]
     ]);
 
-const termFromQueryBinding = (qb) => {
+// TODO: TEST
+// isInDomain: String -> String -> Boolean
+const isInDomain = R.curry((base, id) => {
+    return new URL(base).origin === new URL(id).origin; 
+});
+
+// TODO: TEST
+// pathname: String -> String
+const pathname = s => {
+    return new URL(s).pathname;
+};
+
+// TODO: TEST
+// termFromQueryBinding: String -> Binding -> Term
+const termFromQueryBinding = R.curry((base, qb) => {
     return {
         id: qb[QB_TERM].value,
         type: friendlyTypeName(qb[QB_TYPE].value),
         label: qb[QB_LABEL].value,
-        comment: R.path([QB_COMMENT, 'value'], qb)
+        comment: R.path([QB_COMMENT, 'value'], qb),
+        href: R.when(isInDomain(base), pathname, qb[QB_TERM].value)
     }
-};
+});
 
 const proxyTerm = (id) => {
     return {
         id,
-        type: 'proxy'
+        label: id,
+        type: 'proxy',
+        href: id
     }
 };
 
@@ -71,13 +93,11 @@ const termOrProxy = R.ifElse(
     R.prop,
     proxyTerm);
 
-
 // containsID: {k: v} -> {k: v} -> Boolean
 const containsID = R.eqProps('id');
 
 // uniqueAppendById: a -> [a] -> [a]
 const uniqueAppendById = Rx.uniqueAppendWith(containsID);
-
 
 // NOTE: This section intentionally mutates the term map. The more pure approach
 //       would involve producing multiple term maps - 1 for each domain/range 
@@ -85,42 +105,61 @@ const uniqueAppendById = Rx.uniqueAppendWith(containsID);
 //       For this particular application, such an approach seems unnecessary
 //       in both complexity and in memory consumption
 const domainAndRangeBinder = R.curry((termMap, qb) => {
-    const property = termOrProxy(qb[QB_PROPERTY].value, termMap);
-    const domainClass = termOrProxy(qb[QB_DOMAIN].value, termMap);
-    const rangeClass = termOrProxy(qb[QB_RANGE].value, termMap);
+    const domain = R.path([QB_DOMAIN, 'value'], qb);
+    const range = R.path([QB_RANGE, 'value'], qb);
+
+    if(R.isNil(domain) || R.isNil(range)) return;
+
+    const term = termOrProxy(qb[QB_TERM].value, termMap);
+    const domainClass = termOrProxy(domain, termMap);
+    const rangeClass = termOrProxy(range, termMap);
 
     // domain
-    property.usedOn = uniqueAppendById(domainClass, property.usedOn);
-    domainClass.properties = uniqueAppendById(property, domainClass.properties);
+    term.usedOn = uniqueAppendById(domainClass, term.usedOn);
+    domainClass.properties = uniqueAppendById(term, domainClass.properties);
     
     // range
-    property.expectedTypes = uniqueAppendById(rangeClass, property.expectedTypes);
-    rangeClass.valueFor = uniqueAppendById(property, rangeClass.valueFor);
+    term.expectedTypes = uniqueAppendById(rangeClass, term.expectedTypes);
+    rangeClass.valueFor = uniqueAppendById(term, rangeClass.valueFor);
 });
 
-// Graph -> [TermViewModel]
-const generateViewModel = (g) => {
+const parentClassBinder = R.curry((termMap, qb) => {
+    const parent = R.path([QB_PARENT, 'value'], qb);
+
+    if(R.isNil(parent)) return;
+
+    const term = termOrProxy(qb[QB_TERM].value, termMap);
+    const parentClass = termOrProxy(parent, termMap);
+
+    // parent
+    term.parentClasses = uniqueAppendById(parentClass, term.parentClasses);
+    parentClass.childClasses = uniqueAppendById(term, parentClass.childClasses);
+});
+
+// Graph, String -> [TermViewModel]
+const generateViewModel = (g, base) => {
     // get terms
     const tq = rdf.SPARQLToQuery(termsQuery, false, g);
     const tqBindings = g.querySync(tq);
 
     // index terms by id for faster relationship binding
     const termMap = R.pipe(
-        R.map(termFromQueryBinding), 
+        R.map(termFromQueryBinding(base)), 
         R.indexBy(R.prop('id')))(tqBindings);
 
     // bind properties (domain and range)
-    const pq = rdf.SPARQLToQuery(propertiesQuery, false, g);
-    const pqBindings = g.querySync(pq);
+    const rq = rdf.SPARQLToQuery(relsQuery, false, g);
+    const rqBindings = g.querySync(rq);
 
-    R.forEach(domainAndRangeBinder(termMap), pqBindings);
+    R.forEach(domainAndRangeBinder(termMap), rqBindings);
+    R.forEach(parentClassBinder(termMap), rqBindings);
 
     // NO NO NO NO NO NO  
     //  this would result in an O(n^2) complexity because of having to 
-    //  iterate pqBindings for every iteration of termMap. I'm leaving
+    //  iterate rqBindings for every iteration of termMap. I'm leaving
     //  the code here as a reminder that clever functional composition 
     //  doesn't prevent terrible time complexity.
-    // const boundTermMap = R.map(domainAndRangeBinder(pqBindings), termMap);
+    // const boundTermMap = R.map(domainAndRangeBinder(rqBindings), termMap);
 
     return R.values(termMap);
 };

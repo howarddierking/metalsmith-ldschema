@@ -11,23 +11,24 @@ metalsmith(__dirname)
   .source('./src')
   .destination('./site')
   .use(ldschema({
-    classLayout: 'class.html',
-    propertyLayout: 'property.html',
+    classLayout: 'class.hbs',
+    propertyLayout: 'property.hbs',
+    indexLayout: 'index.hbs',
     base: 'http://schema.howarddierking.com'
   }))
-  // .use(permalinks({
-  //   pattern: ':title'
-  // }))
   .use(layouts())
-  // .use(serve({
-  //   host: "0.0.0.0",
-  //   port: "8080",
-  //   verbose: true
-  // }))
-  // .use(watch({
-  //   pattern: '**/*',
-  //   livereload: true
-  // }))
+  .use(permalinks({
+    relative: false
+  }))
+  .use(serve({
+    host: "0.0.0.0",
+    port: "8080",
+    verbose: true
+  }))
+  .use(watch({
+    pattern: '**/*',
+    livereload: true
+  }))
   .build(function(err){
     if(err)
       console.error(err)

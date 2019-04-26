@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ term.label }}</title>
+    <title>schema.howarddierking.com</title>
 
     <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
@@ -31,7 +31,15 @@
       </div>
     </nav>
     <div class="container">
-      {{ term.id }}
+      <section>
+      <h1>Classes</h1>
+        <ul>
+        {{#each classes}}
+          <li><a href="{{href}}">{{label}}</a></li>
+        {{/each}}
+        </ul>
+      </section>
+      
     </div>
 
     <script src="/components/jquery/dist/jquery.min.js"></script>
