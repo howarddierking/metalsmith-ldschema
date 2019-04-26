@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-ldschema",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Metalsmith plugin for generating Web documentation for a linked data vocabulary. Inspired by https://schema.org",
   "main": "src/index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/howarddierking/metalsmith-ldschema/issues"
   },
-  "homepage": "https://github.com/howarddierking/metalsmith-ldschema#readme",
+  "homepage": "https://github.com/howarddierking/metalsmith-ldschema",
   "engines": {
     "node": ">=10.15.0"
   },
