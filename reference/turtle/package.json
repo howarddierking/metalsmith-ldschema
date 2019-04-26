@@ -1,0 +1,31 @@
+{
+  "name": "metalsmith-ldschema-reference",
+  "version": "0.0.2",
+  "description": "reference schema site using metalsmith-ldschema",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:debug": "node inspect ./build.js",
+    "build": "node ./build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/howarddierking/metalsmith-ldschema.git"
+  },
+  "author": "Howard Dierking",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/howarddierking/metalsmith-ldschema/issues"
+  },
+  "homepage": "https://github.com/howarddierking/metalsmith-ldschema#readme",
+  "dependencies": {
+    "bluebird": "^3.5.4",
+    "jstransformer-handlebars": "^1.1.0",
+    "metalsmith": "^2.3.0",
+    "metalsmith-layouts": "^2.3.1",
+    "metalsmith-permalinks": "^2.2.0",
+    "metalsmith-serve": "^0.0.7",
+    "metalsmith-watch": "^1.0.3",
+    "ramda": "^0.25.0"
+  }
+}

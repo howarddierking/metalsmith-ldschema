@@ -3,6 +3,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix s: <http://schema.org/> .
 
 </Bug> a rdfs:Class ;
        rdfs:label "Bug" ;
@@ -20,47 +21,47 @@
 </title> a rdf:Property ;
          rdfs:label "title" ;
          rdfs:comment "The name of the item." ;
-         rdfs:range xsd:string ;
-         rdfs:domain </Bug> .
+         s:rangeIncludes s:Text ;
+         s:domainIncludes </Bug> .
 
 </status> a rdf:Property ;
           rdfs:label "status" ;
           rdfs:comment "An identifier describing the state of an object in a workflow." ;
-          rdfs:range xsd:string ;
-          rdfs:domain </Bug> .
+          s:rangeIncludes s:Text ;
+          s:domainIncludes </Bug> .
 
 </description> a rdf:Property ;
                rdfs:label "description" ;
                rdfs:comment "A more detailed explanation than what may be contained in an ojbect's name." ;
-               rdfs:range xsd:string ;
-               rdfs:domain </Bug> .
+               s:rangeIncludes s:Text ;
+               s:domainIncludes </Bug>, </Collaborator> .
 
 </assignedTo> a rdf:Property ;
               rdfs:label "assignedTo" ;
               rdfs:comment "Zero or more agents that are assigned to a unit of work." ;
-              rdfs:range </Collaborator> ;
-              rdfs:domain </Bug> .
+              s:rangeIncludes </Collaborator> ;
+              s:domainIncludes </Bug> .
 
 </watchedBy> a rdf:Property ;
              rdfs:label "watchedBy" ;
              rdfs:comment "Zero or more agents that wish to be kept updated on the status of a unit of work." ;
-             rdfs:range </Collaborator> ;
-             rdfs:domain </Bug> .
+             s:rangeIncludes </Collaborator> ;
+             s:domainIncludes </Bug> .
 
 </username> a rdf:Property ;
             rdfs:label "username" ;
             rdfs:comment "A system-scoped identifier for an agent." ;
-            rdfs:range xsd:string ;
-            rdfs:domain </Collaborator> .
+            s:rangeIncludes s:Text ;
+            s:domainIncludes </Collaborator> .
 
 </assignment> a rdf:Property ;
               rdfs:label "assignment" ;
               rdfs:comment "Zero or more units of work that are associated with an agent." ;
-              rdfs:range </Bug> ;
-              rdfs:domain <Collaborator> .
+              s:rangeIncludes </Bug> ;
+              s:domainIncludes <Collaborator> .
 
 </email> a rdf:Property ;
          rdfs:label "email" ;
          rdfs:comment "An email address for contact." ;
-         rdfs:range xsd:string ;
-         rdfs:domain </HumanCollaborator> .
+         s:rangeIncludes s:Text ;
+         s:domainIncludes </HumanCollaborator> .

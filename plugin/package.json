@@ -1,10 +1,13 @@
 {
   "name": "metalsmith-ldschema",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Metalsmith plugin for generating Web documentation for a linked data vocabulary. Inspired by https://schema.org",
-  "main": "src/metalsmith-ldschema.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx mocha",
+    "test:debug": "npx mocha inspect",
+    "lint": "eslint ./src/** ./test/**",
+    "lint:check": "eslint --print-config . | eslint-config-prettier-check"
   },
   "repository": {
     "type": "git",
@@ -22,10 +25,22 @@
     "url": "https://github.com/howarddierking/metalsmith-ldschema/issues"
   },
   "homepage": "https://github.com/howarddierking/metalsmith-ldschema#readme",
+  "engines": {
+    "node": ">=10.15.0"
+  },
   "dependencies": {
     "bluebird": "^3.5.1",
-    "jsonld": "^0.4.11",
-    "ramda": "^0.25.0",
-    "rdflib": "^0.16.3"
+    "jsonld": "1.5.4",
+    "ramda": "0.26.1",
+    "rdflib": "0.20.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "5.16.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.17.2",
+    "eslint-plugin-prettier": "3.0.1",
+    "mocha": "^6.0.2",
+    "prettier": "1.17.0"
   }
 }
