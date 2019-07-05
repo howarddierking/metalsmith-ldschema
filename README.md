@@ -6,6 +6,7 @@ Metalsmith plugin for generating Web documentation for a linked data vocabulary.
 * Metalsmith (^2.3.0)
 * Metalsmith Layouts (^2.3.1)
 * Metalsmith Permalinks (^2.2.0)
+* Docker (optional)
 
 ## Installation
 * Create a new static Web site using [metalsmith](http://www.metalsmith.io/)
@@ -63,6 +64,22 @@ Properties will contain the following properties:
 * `rdfs:range`
 * `rdfs:domain`
 * `rdfs:subClassOf`
+
+
+## Using the Local Server
+
+A common convention in ontology building is to use casing to differentiate classes from properties. This means that it's not uncommon to have a property and a class with the same name but different casing. Popular file systems like OSX's HFS have support for case-sensitivity, but it requires additional operating system configuration (e.g. journaling) which may be made increasingly complex by the addition of developer operating systems.
+
+Rather than ask users to change core OS settings, the Docker image `metalsmith-ldjson-server` is provided as a local server. This server is built on Alpine Linux and a file system that provides full support for case-sensitive filenames.
+
+To use, simply mount your metalsmith-ldschema project directory into `/project`, map your desired local port to `8080` in the container and execute a command as follows: 
+
+```
+docker run \
+    -v "$(pwd):/project" \
+    -p 8080:8080 \
+    metalsmith-ldschema-host "yarn install && npx bower install --allow-root && yarn run build"
+```
 
 ## Tests
 

@@ -64,3 +64,9 @@
          rdfs:comment "An email address for contact." ;
          rdfs:range xsd:string ;
          rdfs:domain </HumanCollaborator> .
+
+</bug>  a rdf:Property ;
+        rdfs:label "bug" ;
+        rdfs:comment "any associated bug" ;
+        rdfs:range </Bug> ;
+        rdfs:domain </Collaborator> .
