@@ -77,7 +77,7 @@ To use, simply mount your metalsmith-ldschema project directory into `/project`,
 ```
 docker run -it \
     -v "$(pwd):/project" \
-    -p 8080:8080 metalsmith-ldschema-host:latest \
+    -p 8080:8080 howarddierking/metalsmith-ldschema-host:latest \
     "yarn install && npx bower install --allow-root && yarn run build"
 ```
 

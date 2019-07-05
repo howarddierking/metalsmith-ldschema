@@ -1,4 +1,4 @@
-# repository: metalsmith-ldschema-host
+# repository: howarddierking/metalsmith-ldschema-host
 FROM alpine:3.9
 LABEL maintainer="howarddierking@gmail.com"
 LABEL reference="https://github.com/nodejs/docker-node/blob/5a6a5e91999358c5b04fddd6c22a9a4eb0bf3fbf/10/alpine/Dockerfile, https://hub.docker.com/r/mesosphere/aws-cli/dockerfile"
