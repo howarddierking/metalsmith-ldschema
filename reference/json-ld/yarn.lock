@@ -877,10 +877,10 @@ metalsmith-layouts@^2.3.1:
     jstransformer "^1.0.0"
     multimatch "^2.1.0"
 
-metalsmith-ldschema@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/metalsmith-ldschema/-/metalsmith-ldschema-1.0.2.tgz#d11760c53baad235299964f1ca08d14cb816d34d"
-  integrity sha512-Y3iIbKCJr4A9WX94i91T3x4yaVttm6yLE6M9U9dWLp2hHhPGJAYKezCe9QiibxshEX8Msu5dWGchyZvfahdf1w==
+metalsmith-ldschema@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/metalsmith-ldschema/-/metalsmith-ldschema-1.0.3.tgz#f95560a1a21b8fec3316b4d9cc00337138e808ba"
+  integrity sha512-yKIPKOtIHlJUOkNt4uIezhmsKp3C58YCWkKlHq/K3yY9dub0yELTF92wxkvY8AiyYebLKyUuGEfuUNgzbnwhWQ==
   dependencies:
     bluebird "^3.5.1"
     jsonld "^1.6.2"
