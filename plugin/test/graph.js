@@ -61,17 +61,19 @@ describe('graph/loader', () => {
 // Graph -> [Object]
 describe('graph/termGenerator', () => {
     describe('#termsFor', () => {
+        let minTermsGraph = null;
         let termsGraph = null;
         let propsGraph = null;
+        let inheritenceGraph = null;
         beforeEach(() => {
+            minTermsGraph = rdf.graph();
+            minTermsGraph.add(TEST('MyClass'), RDF('type'), RDFS('Class'));
+            minTermsGraph.add(TEST('MyClass'), RDFS('label'), 'MyClass');
+
             termsGraph = rdf.graph();
             termsGraph.add(TEST('MyClass'), RDF('type'), RDFS('Class'));
             termsGraph.add(TEST('MyClass'), RDFS('label'), 'MyClass');
-            termsGraph.add(
-                TEST('MyClass'),
-                RDFS('comment'),
-                'Detailed description about the subject.'
-            );
+            termsGraph.add(TEST('MyClass'), RDFS('comment'), 'A comment');
 
             propsGraph = rdf.graph();
             propsGraph.add(TEST('MyClass'), RDF('type'), RDFS('Class'));
@@ -86,6 +88,14 @@ describe('graph/termGenerator', () => {
             propsGraph.add(TEST('MyString'), RDF('type'), RDFS('Class'));
             propsGraph.add(TEST('MyString'), RDFS('label'), 'MyString');
             propsGraph.add(TEST('description'), RDFS('range'), TEST('MyString'));
+
+            inheritenceGraph = rdf.graph();
+            inheritenceGraph.add(TEST('ParentClass'), RDF('type'), RDFS('Class'));
+            inheritenceGraph.add(TEST('ParentClass'), RDFS('label'), 'ParentClass');
+            inheritenceGraph.add(TEST('ChildClass'), RDF('type'), RDFS('Class'));
+            inheritenceGraph.add(TEST('ChildClass'), RDFS('label'), 'ChildClass');
+            inheritenceGraph.add(TEST('ChildClass'), RDFS('subClassOf'), TEST('ParentClass'));
+            
         });
 
         it('it should return [] when graph is nil', () => {
@@ -94,14 +104,26 @@ describe('graph/termGenerator', () => {
         it('should return 3 term view models for respective graph', () => {
             termGenerator.termsFor(termsGraph).length.should.equal(1);
         });
-        it('should set optional terms to Undefined when not present');
+        it('should set optional terms to Undefined when not present', () => {
+            const expected = [
+                {
+                    id: 'http://schema.test.org/MyClass',
+                    type: 'class',
+                    label: 'MyClass',
+                    comment: undefined,
+                    href: 'http://schema.test.org/MyClass'
+                }
+            ];
+
+            termGenerator.termsFor(minTermsGraph).should.deep.equal(expected);
+        });
         it('should return expected view model for class', () => {
             const expected = [
                 {
                     id: 'http://schema.test.org/MyClass',
                     type: 'class',
                     label: 'MyClass',
-                    comment: 'Detailed description about the subject.',
+                    comment: 'A comment',
                     href: 'http://schema.test.org/MyClass'
                 }
             ];
@@ -131,7 +153,23 @@ describe('graph/termGenerator', () => {
             const description = R.find(R.propEq('id', TEST('description').value), terms);
             description.expectedTypes.length.should.equal(2);
         });
-        it('should bind classes correctly for inheritence relationships');
-        it('should include href value that accounts for host mask');
+        it('should bind classes correctly for inheritence relationships', () => {
+            const terms = termGenerator.termsFor(inheritenceGraph);
+            const parent = R.find(R.propEq('id', TEST('ParentClass').value), terms);
+            const child = R.find(R.propEq('id', TEST('ChildClass').value), terms);
+
+            debugger;
+
+            parent.childClasses.length.should.equal(1);
+            child.parentClasses.length.should.equal(1);
+        });
+        it('should specify the fully qualified href value when base is undefined', () => {
+            const terms = termGenerator.termsFor(propsGraph);
+            terms[0].href.should.eql('http://schema.test.org/MyClass');
+        });
+        it('should specify the path only for the href value when base is defined for the term', () => {
+            const terms = termGenerator.termsFor(propsGraph, 'http://schema.test.org');
+            terms[0].href.should.eql('/MyClass');
+        });
     });
 });
