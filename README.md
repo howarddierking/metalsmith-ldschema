@@ -75,10 +75,7 @@ Rather than ask users to change core OS settings, the Docker image `metalsmith-l
 To use, simply mount your metalsmith-ldschema project directory into `/project`, map your desired local port to `8080` in the container and execute a command as follows: 
 
 ```
-docker run \
-    -v "$(pwd):/project" \
-    -p 8080:8080 \
-    metalsmith-ldschema-host "yarn install && npx bower install --allow-root && yarn run build"
+docker run -it -v "$(pwd):/project" -p 8080:8080 metalsmith-ldschema-host:latest "yarn run build"
 ```
 
 ## Tests
