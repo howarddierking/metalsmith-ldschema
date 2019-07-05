@@ -158,8 +158,6 @@ describe('graph/termGenerator', () => {
             const parent = R.find(R.propEq('id', TEST('ParentClass').value), terms);
             const child = R.find(R.propEq('id', TEST('ChildClass').value), terms);
 
-            debugger;
-
             parent.childClasses.length.should.equal(1);
             child.parentClasses.length.should.equal(1);
         });

@@ -4,7 +4,7 @@ const layouts = require('metalsmith-layouts');
 const permalinks = require('metalsmith-permalinks')
 const serve = require('metalsmith-serve');
 const watch = require('metalsmith-watch');
-const ldschema = require('../../plugin');
+const ldschema = require('metalsmith-ldschema');
 
 
 metalsmith(__dirname)
