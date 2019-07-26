@@ -1,0 +1,23 @@
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix h: <http://schema.howarddierking.com/>
+
+select ?id ?type ?label ?comment ?parent ?domain ?range ?classification
+where 
+{ 
+    ?id rdf:type ?type ;
+        rdfs:label ?label .
+    OPTIONAL { 
+        ?id rdfs:comment ?comment . 
+    }
+    OPTIONAL { 
+        ?id rdfs:domain ?domain;
+              rdfs:range ?range .
+    }
+    OPTIONAL {
+        ?id h:classification ?classification .
+    }
+    OPTIONAL {
+        ?id rdfs:subClassOf ?parent .
+    }
+}

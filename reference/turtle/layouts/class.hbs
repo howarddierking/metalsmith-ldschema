@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ term.label }}</title>
+  <title>{{ term.label.[0] }}</title>
 
   <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
@@ -34,8 +34,8 @@
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <h1>{{term.label}}</h1>
-          <p>{{term.comment}}</p>
+          <h1>{{term.label.[0]}}</h1>
+          <p>{{term.comment.[0]}}</p>
         </div>
       </div>
 
@@ -44,7 +44,7 @@
           <h3>Parent class(es)</h3>
           <ul>
             {{#each term.parentClasses}}
-            <li><a href="{{href}}">{{label}}</a></li>
+            <li><a href="{{href}}">{{label.[0]}}</a></li>
             {{/each}}
           </ul>
         </div>
@@ -66,35 +66,35 @@
             </thead>
 
             <tr class="bg-info">
-              <td colspan="3">Properties From <a href="{{term.href}}">{{term.label}}</a></td>
+              <td colspan="3">Properties From <a href="{{term.href}}">{{term.label.[0]}}</a></td>
             </tr>
             <!-- Iterate This Class -->
             {{#each term.properties}}
             <tr>
-              <td><a href="{{href}}">{{label}}</a></td>
+              <td><a href="{{href}}">{{label.[0]}}</a></td>
               <td>
                 {{#each expectedTypes}}
-                <a href="{{href}}">{{label}}</a><br>
+                <a href="{{href}}">{{label.[0]}}</a><br>
                 {{/each}}
               </td>
-              <td>{{comment}}</td>
+              <td>{{comment.[0]}}</td>
             </tr>
             {{/each}}
             
             <!-- Iterate Parent Classes -->
             {{#each term.parentClasses}}
             <tr class="bg-info">
-              <td colspan="3">Properties From <a href="{{href}}">{{label}}</a></td>
+              <td colspan="3">Properties From <a href="{{href}}">{{label.[0]}}</a></td>
             </tr>
             {{#each properties}}
             <tr>
-              <td><a href="{{href}}">{{label}}</a></td>
+              <td><a href="{{href}}">{{label.[0]}}</a></td>
               <td>
                 {{#each expectedTypes}}
-                <a href="{{href}}">{{label}}</a>
+                <a href="{{href}}">{{label.[0]}}</a>
                 {{/each}}
               </td>
-              <td>{{comment}}</td>
+              <td>{{comment.[0]}}</td>
             </tr>
             {{/each}}
             {{/each}}
@@ -110,7 +110,7 @@
           <h3>Instances may appear as values for the following properties</h3>
           <ul>
             {{#each term.valueFor}}
-            <li><a href="{{href}}">{{label}}</a></li>
+            <li><a href="{{href}}">{{label.[0]}}</a></li>
             {{/each}}
           </ul>
         </div>
@@ -122,7 +122,7 @@
           <h3>More specific types</h3>
           <ul>
             {{#each term.childClasses}}
-            <li><a href="{{href}}">{{label}}</a></li>
+            <li><a href="{{href}}">{{label.[0]}}</a></li>
             {{/each}}
           </ul>
         </div>
