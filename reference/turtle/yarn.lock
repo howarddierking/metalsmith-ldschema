@@ -9,6 +9,13 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
+"@babel/runtime@^7.4.4":
+  version "7.5.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.5.5.tgz#74fba56d35efbeca444091c7850ccd494fd2f132"
+  integrity sha512-28QvEGyQyNkB0/m2B4FU7IEZGK2NUrcMtT6BZEFALTguLk+AUT6ofsHtPk5QyjAdUkpMJ+/Em+quwz4HOt30AQ==
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
 "@solid/cli@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@solid/cli/-/cli-0.1.1.tgz#83b58baffd78e0b02a47b92dceff1dcb9671f48b"
@@ -230,15 +237,10 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bluebird@^3.5.1:
+bluebird@3.5.5, bluebird@^3.5.1:
   version "3.5.5"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.5.tgz#a8d0afd73251effbbd5fe384a77d73003c17a71f"
   integrity sha512-5am6HnnfN+urzt4yfg7IgTbotDjIT/u8AJpEt0sIU9FtXfVeezXAPKswrG+xKUCOYAINpSdgZVDU6QFh+cuH3w==
-
-bluebird@^3.5.4:
-  version "3.5.4"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.4.tgz#d6cc661595de30d5b3af5fcedd3c0b3ef6ec5714"
-  integrity sha512-FG+nFEZChJrbQ9tIccIfZJBz3J7mLrAhxakAbnrJWn8d7aKOC+LWifa0G+p4ZqKp4y13T7juYvdhq9NzKdsrjw==
 
 bn.js@^4.0.0, bn.js@^4.4.0:
   version "4.11.8"
@@ -882,15 +884,15 @@ metalsmith-layouts@^2.3.1:
     jstransformer "^1.0.0"
     multimatch "^2.1.0"
 
-metalsmith-ldschema@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/metalsmith-ldschema/-/metalsmith-ldschema-1.0.3.tgz#f95560a1a21b8fec3316b4d9cc00337138e808ba"
-  integrity sha512-yKIPKOtIHlJUOkNt4uIezhmsKp3C58YCWkKlHq/K3yY9dub0yELTF92wxkvY8AiyYebLKyUuGEfuUNgzbnwhWQ==
+metalsmith-ldschema@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/metalsmith-ldschema/-/metalsmith-ldschema-2.1.1.tgz#ca410b945f8be77d33d47c73640e9e92ddeac293"
+  integrity sha512-HKRENwbf9g2iBXc0C/xX1M/+FHznxEdUylYhQ1gvm7RsYpMztci4nqvnhO7wD8rMSv0HkRxDl2ctVrhc845WEA==
   dependencies:
     bluebird "^3.5.1"
     jsonld "^1.6.2"
     ramda "0.26.1"
-    rdflib "^0.20.1"
+    rdflib "0.20.3"
 
 metalsmith-permalinks@^2.2.0:
   version "2.2.0"
@@ -1160,11 +1162,6 @@ ramda@0.26.1:
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.26.1.tgz#8d41351eb8111c55353617fc3bbffad8e4d35d06"
   integrity sha512-hLWjpy7EnsDBb0p+Z3B7rPi3GDeRG5ZtiI33kJhTt+ORCd38AbAIjB/9zRIUoeTbE/AVX5ZkU7m6bznsvrf8eQ==
 
-ramda@^0.25.0:
-  version "0.25.0"
-  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.25.0.tgz#8fdf68231cffa90bc2f9460390a0cb74a29b29a9"
-  integrity sha512-GXpfrYVPwx3K7RQ6aYT8KPS8XViSXUVJT1ONhoKPE9VAleW42YE+U+8VEyGWt41EnEQW7gwecYJriTI0pKoecQ==
-
 raw-body@1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/raw-body/-/raw-body-1.3.0.tgz#978230a156a5548f42eef14de22d0f4f610083d1"
@@ -1181,11 +1178,12 @@ rdf-canonize@^1.0.2:
     node-forge "^0.8.1"
     semver "^5.6.0"
 
-rdflib@^0.20.1:
-  version "0.20.1"
-  resolved "https://registry.yarnpkg.com/rdflib/-/rdflib-0.20.1.tgz#e2e8dbff7723f456149881ae5c7e97c3b9757551"
-  integrity sha512-5G1t7rURqPdsYE+mjpDW2e9/H19XFMuChTIjPFPtH2tI0fma+xlJYwrSgmd1aOm45SOYKpqwJfTSIvFpmP2n+g==
+rdflib@0.20.3:
+  version "0.20.3"
+  resolved "https://registry.yarnpkg.com/rdflib/-/rdflib-0.20.3.tgz#9b478f96b59a4271195982e71000836590b639d6"
+  integrity sha512-qsQp+K1qfeKafxqrx2cn6cgQubCA9aoOZCZlj1gQqKwqWMAUlfWKDrivbrrpsBzJPxuypJMdo1r6i5Bpwtjl4w==
   dependencies:
+    "@babel/runtime" "^7.4.4"
     async "^0.9.x"
     jsonld "^0.4.5"
     n3 "^0.4.1"

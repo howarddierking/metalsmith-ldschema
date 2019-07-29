@@ -66,7 +66,8 @@ describe('graph', () => {
                     }
                 ];
 
-                termGenerator.termsFor(minTermsGraph).should.deep.equal(expected);
+                const actual = termGenerator.termsFor(minTermsGraph);
+                actual.should.deep.equal(expected);
             });
             it('should return expected view model for class', () => {
                 const expected = [
@@ -79,7 +80,8 @@ describe('graph', () => {
                     }
                 ];
 
-                termGenerator.termsFor(termsGraph).should.deep.equal(expected);
+                const actual = termGenerator.termsFor(termsGraph);
+                actual.should.deep.equal(expected);
             });
 
             it('should have 2 domain values for propsGraph::description', () => {

@@ -5,15 +5,15 @@ const path = require('path');
 const metalsmithFs = require('./fs');
 const graph = require('./graph');
 
-// TODO: get from config
 const DEFAULT_INDEX_FILE = 'index.html';
 const DEFAULT_INDEX_LAYOUT = 'index.hbs';
-const DEFAULT_LAYOUT = 'layout.hbs';
-const DEFAULT_CLASS_LAYOUT = 'class.hbs';
-const DEFAULT_PROPERTY_LAYOUT = 'property.hbs';
 
-// layout: Object -> String -> String
-const getLayout = R.curry((options, typeName) => {
+// (Object, String) -> String
+const DEFAULT_GET_LAYOUT = (options, typeName) => {
+    const DEFAULT_LAYOUT = 'layout.hbs';
+    const DEFAULT_CLASS_LAYOUT = 'class.hbs';
+    const DEFAULT_PROPERTY_LAYOUT = 'property.hbs';
+
     if (typeName === graph.knownOntologies.RDFS('Class').value) {
         return R.defaultTo(DEFAULT_CLASS_LAYOUT, options.classLayout);
     }
@@ -21,14 +21,17 @@ const getLayout = R.curry((options, typeName) => {
         return R.defaultTo(DEFAULT_PROPERTY_LAYOUT, options.propertyLayout);
     }
     return DEFAULT_LAYOUT;
-});
+};
+
+// a-> Boolean
+const DEFAULT_IS_CLASS = R.pathEq(['type', [0]], graph.knownOntologies.RDFS('Class').value);
 
 // metalsmithFileFromViewModel: (String -> String) -> Term -> [String, File]
-const metalsmithFileFromViewModel = R.curry((layout, term) => {
+const metalsmithFileFromViewModel = R.curry((options, getLayout, term) => {
     const filename = `${path.basename(term.id[0])}.html`;
     const fileContents = {
         term,
-        layout: layout(term.type[0]),
+        layout: getLayout(options, term.type[0]),
         contents: Buffer.from('')
     };
 
@@ -39,14 +42,14 @@ const metalsmithFileFromViewModel = R.curry((layout, term) => {
 // 1) files | pick rdf files | generate terms | add term files -> files
 // 2) files | pick all non-rdf files -> files
 const generateSite = R.curry((options, files, metalsmith, done) => {
-    const layout = getLayout(options);
+    const getLayout = R.defaultTo(DEFAULT_GET_LAYOUT, options.getLayout);
     const rdfFiles = metalsmithFs.rdfFiles(files);
     graph.from(rdfFiles).then(g => {
         const vm = graph.termsFor(g, options.query, options.base);
 
         // add a terms collection to each remaining file so that index pages, etc. can be created
         const termFiles = R.pipe(
-            R.map(metalsmithFileFromViewModel(layout)),
+            R.map(metalsmithFileFromViewModel(options, getLayout)),
             R.fromPairs
         )(vm);
 
@@ -55,13 +58,12 @@ const generateSite = R.curry((options, files, metalsmith, done) => {
             files[key] = value; // eslint-disable-line no-param-reassign
         }, termFiles);
 
+        const isClass = R.defaultTo(DEFAULT_IS_CLASS, options.isClass);
+
         // add index to files
         // eslint-disable-next-line no-param-reassign
         files[DEFAULT_INDEX_FILE] = {
-            classes: R.filter(
-                R.pathEq(['type', [0]], graph.knownOntologies.RDFS('Class').value),
-                vm
-            ),
+            classes: R.filter(isClass, vm),
             layout: DEFAULT_INDEX_LAYOUT,
             contents: Buffer.from('')
         };
