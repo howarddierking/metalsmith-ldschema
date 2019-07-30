@@ -11,7 +11,7 @@ const viewModel = require('./viewModel');
 const graphQuery = R.defaultTo(`prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 
-select ?id ?type ?label ?comment ?parent ?domain ?range ?classification
+select ?id ?type ?label ?comment ?parent ?domain ?range
 where 
 { 
     ?id rdf:type ?type ;
