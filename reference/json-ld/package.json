@@ -23,10 +23,10 @@
     "jstransformer-handlebars": "^1.1.0",
     "metalsmith": "^2.3.0",
     "metalsmith-layouts": "^2.3.1",
-    "metalsmith-ldschema": "1.0.3",
+    "metalsmith-ldschema": "2.1.1",
     "metalsmith-permalinks": "^2.2.0",
     "metalsmith-serve": "^0.0.7",
     "metalsmith-watch": "^1.0.3",
-    "ramda": "^0.25.0"
+    "ramda": "0.26.1"
   }
 }

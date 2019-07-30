@@ -10,7 +10,8 @@ const parseRdf = P.promisify(rdf.parse);
 
 const rdfTypes = {
     '.jsonld': 'application/ld+json',
-    '.ttl': 'text/turtle'
+    '.ttl': 'text/turtle',
+    '.owl': 'text/turtle'
 };
 
 // String -> String
