@@ -66,22 +66,22 @@ where
 ## View Models
 When building views, each template will be supplied with a view model containing either a single term or a list of terms (`classes` in the case of the index page), depending on the type of page being rendered. For both property and class templates, the term will be held in the variable `term` and will contain properties based on either the supplied or the default SPARQL query. For example, the default query will yield a term view model resembling the following:
 
-`id` [<URI>] - URI of the term
-`type` [<URI>] - Term type
-`label` [<String>] - Self-explanatory
-`comment` [<String>] - Self-explanatory
-`domain` [<URI>] - For property terms, domain represents the class on which the property may be found
-`range` [<URI>] - For property terms, range represents the possible types that the property value may be
+* `id` [\<URI\>] - URI of the term
+* `type` [\<URI\>] - Term type
+* `label` [\<String\>] - Self-explanatory
+* `comment` [\<String\>] - Self-explanatory
+* `domain` [\<URI\>] - For property terms, domain represents the class on which the property may be found
+* `range` [\<URI\>] - For property terms, range represents the possible types that the property value may be
 
 In addition to the properties created from the supplied SPARQL query, the library adds the additional properties based on the provided input. Note that while the specific terms are no longer significant (thereby supporting ontologies other than [RDF and RDFS](https://www.w3.org/TR/rdf11-mt/)), the parameter names need to be consistent in a supplied SPARQL query.
 
-* `href` <String> - URL to the term for the Web site. Based on the `base` configuration value, will be either an absolute or relative URL
-* `properties` [<Term>] - For class terms, properties associated with the class via `rdfs:domain`
-* `valueFor` [<Term>] - For class terms, properties for which the class may be a type via `rdfs:range`
-* `parentClasses` [<Term>] - For class terms, parent classes as specified by `rdfs:subClassOf`
-* `childClasses` [<Term>] - For class terms, child classes as specified by `rdfs:subClassOf`
-* `usedOn` [<Term>] - For property terms, classes on which the property may be found as specified by `rdfs:range`
-* `expectedTypes` [<Term>] - For property terms, possible types for the property as specified by `rdfs:range`
+* `href` \<String\> - URL to the term for the Web site. Based on the `base` configuration value, will be either an absolute or relative URL
+* `properties` [\<Term\>] - For class terms, properties associated with the class via `rdfs:domain`
+* `valueFor` [\<Term\>] - For class terms, properties for which the class may be a type via `rdfs:range`
+* `parentClasses` [\<Term\>] - For class terms, parent classes as specified by `rdfs:subClassOf`
+* `childClasses` [\<Term\>] - For class terms, child classes as specified by `rdfs:subClassOf`
+* `usedOn` [\<Term\>] - For property terms, classes on which the property may be found as specified by `rdfs:range`
+* `expectedTypes` [\<Term\>] - For property terms, possible types for the property as specified by `rdfs:range`
 
 ## Using the Local Server
 
