@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-ldschema",
-  "version": "2.1.4",
+  "version": "2.2.0",
   "description": "Metalsmith plugin for generating Web documentation for a linked data vocabulary. Inspired by https://schema.org",
   "main": "src/index.js",
   "scripts": {
@@ -40,6 +40,7 @@
     "eslint-config-airbnb-base": "13.2.0",
     "eslint-plugin-import": "2.18.2",
     "eslint-plugin-prettier": "^3.1.0",
+    "is-absolute-url": "^3.0.2",
     "mocha": "6.2.0",
     "prettier": "1.18.2"
   }
