@@ -30,6 +30,7 @@ const DEFAULT_IS_CLASS = R.pathEq(['type', [0]], graph.knownOntologies.RDFS('Cla
 const metalsmithFileFromViewModel = R.curry((options, getLayout, term) => {
     const filename = `${path.basename(term.id[0])}.html`;
     const fileContents = {
+        base: options.base,
         term,
         layout: getLayout(options, term.type[0]),
         contents: Buffer.from('')
@@ -44,6 +45,7 @@ const metalsmithFileFromViewModel = R.curry((options, getLayout, term) => {
 const generateSite = R.curry((options, files, metalsmith, done) => {
     const getLayout = R.defaultTo(DEFAULT_GET_LAYOUT, options.getLayout);
     const rdfFiles = metalsmithFs.rdfFiles(files);
+
     graph.from(rdfFiles).then(g => {
         const vm = graph.termsFor(g, options.query, options.base);
 
@@ -63,10 +65,13 @@ const generateSite = R.curry((options, files, metalsmith, done) => {
         // add index to files
         // eslint-disable-next-line no-param-reassign
         files[DEFAULT_INDEX_FILE] = {
+            base: options.base,
             classes: R.filter(isClass, vm),
             layout: DEFAULT_INDEX_LAYOUT,
             contents: Buffer.from('')
         };
+
+        debugger;
 
         setImmediate(done);
     });

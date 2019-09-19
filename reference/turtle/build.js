@@ -4,7 +4,8 @@ const layouts = require('metalsmith-layouts');
 const permalinks = require('metalsmith-permalinks')
 const serve = require('metalsmith-serve');
 const watch = require('metalsmith-watch');
-const ldschema = require('metalsmith-ldschema');
+// const ldschema = require('metalsmith-ldschema');
+const ldschema = require('../../plugin/');
 
 
 metalsmith(__dirname)
@@ -14,7 +15,7 @@ metalsmith(__dirname)
     classLayout: 'class.hbs',
     propertyLayout: 'property.hbs',
     indexLayout: 'index.hbs',
-    base: 'http://schema.howarddierking.com'
+    base: 'http://localhost:8080/'
   }))
   .use(layouts())
   .use(permalinks({

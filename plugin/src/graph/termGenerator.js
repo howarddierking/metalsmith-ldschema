@@ -4,6 +4,7 @@ const R = require('ramda');
 const rdf = require('rdflib');
 const Rx = require('../ramdaExt');
 const viewModel = require('./viewModel');
+const path = require('path');
 
 // NOTE: while using SPARQL creates a level of indirection between the view model
 //       builder and the source data, this approach also makes the names of the
@@ -100,10 +101,16 @@ const parentBinder = R.curry((termMap, term) => {
 
 // //////////////////////////////////////////
 
+const href = R.curry((base = '', id) => {
+    return R.unless(R.startsWith(base), 
+        R.pipe(path.basename,
+            R.concat(base)))(id);
+});
+
 const addHref = R.curry((base, modelTerm) => {
     const m = modelTerm;
     const u = m.id[0];
-    m.href = u.startsWith(base) ? new URL(u).pathname : u;
+    m.href = href(base, u);
     return m;
 });
 
@@ -142,5 +149,6 @@ const knownOntologies = {
 
 module.exports = {
     termsFor: generateViewModel,
-    knownOntologies
+    knownOntologies,
+    href
 };

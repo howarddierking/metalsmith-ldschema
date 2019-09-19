@@ -3,7 +3,9 @@
 const rdf = require('rdflib');
 const R = require('ramda');
 require('chai').should();
+const isAbsoluteUrl = require('is-absolute-url');
 const termGenerator = require('../../src/graph/termGenerator');
+const path = require('path');
 
 const RDFS = rdf.Namespace('http://www.w3.org/2000/01/rdf-schema#');
 const RDF = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
@@ -133,6 +135,33 @@ describe('graph', () => {
 
                 parent.childClasses.length.should.equal(1);
                 child.parentClasses.length.should.equal(1);
+            });
+        });
+
+        describe('#href', () => {
+            it('should always be absolute', () => {
+                isAbsoluteUrl(termGenerator.href('', 'http://schema.concursolutions.com/foo')).should.be.true;
+                isAbsoluteUrl(termGenerator.href('http://localhost:8080', 'http://schema.concursolutions.com/foo')).should.be.true;
+            });
+            it('should always have the same ending segment as the id when the id differs from the site', () => {
+                const id = 'http://schema.concursolutions.com/foo';
+                const base = 'http://localhost:8080/';
+                path.basename(id).should.eql(path.basename(termGenerator.href(base, id)));
+            });
+            it('should be prefixed with the site when the id differs from the site', () => {
+                const id = 'http://schema.concursolutions.com/foo';
+                const base = 'http://localhost:8080/';
+                termGenerator.href(base, id).should.eql(`${base}foo`);
+            });
+            it('should be the same value as the id when the site is the same as the id', () => {
+                const id = 'http://schema.concursolutions.com/foo';
+                const base = 'http://schema.concursolutions.com/';
+                termGenerator.href(base, id).should.eql(id);
+            });
+            it('should treat undefined as empty string', () => {
+                const id = 'http://schema.concursolutions.com/foo';
+                const base = undefined;
+                isAbsoluteUrl(termGenerator.href(base, id)).should.be.true;
             });
         });
     });
