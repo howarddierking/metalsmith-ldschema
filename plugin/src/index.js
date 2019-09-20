@@ -71,8 +71,6 @@ const generateSite = R.curry((options, files, metalsmith, done) => {
             contents: Buffer.from('')
         };
 
-        debugger;
-
         setImmediate(done);
     });
 });

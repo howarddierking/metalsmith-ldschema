@@ -2,9 +2,9 @@
 
 const R = require('ramda');
 const rdf = require('rdflib');
+const path = require('path');
 const Rx = require('../ramdaExt');
 const viewModel = require('./viewModel');
-const path = require('path');
 
 // NOTE: while using SPARQL creates a level of indirection between the view model
 //       builder and the source data, this approach also makes the names of the
@@ -101,10 +101,24 @@ const parentBinder = R.curry((termMap, term) => {
 
 // //////////////////////////////////////////
 
+// base -> path -> String
+const urlJoin = R.curry((base, p) => {
+    return R.pipe(
+        R.unless(R.endsWith('/'), R.concat(R.__, '/')),
+        R.concat(R.__, p),
+        R.when(R.endsWith('/'), R.dropLast(1))
+    )(base);
+});
+
+// base -> id -> String
 const href = R.curry((base = '', id) => {
-    return R.unless(R.startsWith(base), 
-        R.pipe(path.basename,
-            R.concat(base)))(id);
+    return R.unless(
+        R.startsWith(base),
+        R.pipe(
+            path.basename,
+            urlJoin(base)
+        )
+    )(id);
 });
 
 const addHref = R.curry((base, modelTerm) => {

@@ -4,8 +4,8 @@ const rdf = require('rdflib');
 const R = require('ramda');
 require('chai').should();
 const isAbsoluteUrl = require('is-absolute-url');
-const termGenerator = require('../../src/graph/termGenerator');
 const path = require('path');
+const termGenerator = require('../../src/graph/termGenerator');
 
 const RDFS = rdf.Namespace('http://www.w3.org/2000/01/rdf-schema#');
 const RDF = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
@@ -140,8 +140,14 @@ describe('graph', () => {
 
         describe('#href', () => {
             it('should always be absolute', () => {
-                isAbsoluteUrl(termGenerator.href('', 'http://schema.concursolutions.com/foo')).should.be.true;
-                isAbsoluteUrl(termGenerator.href('http://localhost:8080', 'http://schema.concursolutions.com/foo')).should.be.true;
+                isAbsoluteUrl(termGenerator.href('', 'http://schema.concursolutions.com/foo'))
+                    .should.be.true;
+                isAbsoluteUrl(
+                    termGenerator.href(
+                        'http://localhost:8080',
+                        'http://schema.concursolutions.com/foo'
+                    )
+                ).should.be.true;
             });
             it('should always have the same ending segment as the id when the id differs from the site', () => {
                 const id = 'http://schema.concursolutions.com/foo';
@@ -162,6 +168,21 @@ describe('graph', () => {
                 const id = 'http://schema.concursolutions.com/foo';
                 const base = undefined;
                 isAbsoluteUrl(termGenerator.href(base, id)).should.be.true;
+            });
+            it('should handle differences in trailing slashes for base', () => {
+                const expected = 'http://localhost:8080/sub/foo';
+                termGenerator
+                    .href('http://localhost:8080/sub/', 'http://schema.concursolutions.com/foo/')
+                    .should.eql(expected);
+                termGenerator
+                    .href('http://localhost:8080/sub', 'http://schema.concursolutions.com/foo/')
+                    .should.eql(expected);
+                termGenerator
+                    .href('http://localhost:8080/sub/', 'http://schema.concursolutions.com/foo')
+                    .should.eql(expected);
+                termGenerator
+                    .href('http://localhost:8080/sub', 'http://schema.concursolutions.com/foo')
+                    .should.eql(expected);
             });
         });
     });
