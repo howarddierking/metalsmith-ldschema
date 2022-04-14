@@ -1,7 +1,7 @@
 'use strict';
 
 require('chai').should();
-const fsImpl = require('../src/fs/impl.js');
+const fsImpl = require('../src/fs');
 
 describe('metalsmithFs/impl', () => {
     describe('#hasFileExtension', () => {

@@ -3,7 +3,6 @@
 const rdf = require('rdflib');
 const R = require('ramda');
 require('chai').should();
-const isAbsoluteUrl = require('is-absolute-url');
 const path = require('path');
 const termGenerator = require('../../src/graph/termGenerator');
 
@@ -11,6 +10,12 @@ const RDFS = rdf.Namespace('http://www.w3.org/2000/01/rdf-schema#');
 const RDF = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 const XSD = rdf.Namespace('http://www.w3.org/2001/XMLSchema#');
 const TEST = rdf.Namespace('http://schema.test.org/');
+
+// borrowed from https://github.com/sindresorhus/is-absolute-url/blob/main/index.js
+// isAbsoluteUrl: s -> Boolean
+const ABSOLUTE_URL_REGEX = /^[a-zA-Z][a-zA-Z\d+\-.]*?:/;
+const isAbsoluteUrl = s => ABSOLUTE_URL_REGEX.test(s);
+
 
 describe('graph', () => {
     describe('termGenerator', () => {
