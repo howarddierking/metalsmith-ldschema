@@ -1,8 +1,7 @@
-'use strict';
-
-require('chai').should();
-const R = require('ramda');
-const Rx = require('../src/ramdaExt');
+import * as R from 'ramda';
+import * as Rx from '../src/ramdaExt.js';
+import {should} from 'chai';
+should();
 
 // containsID: {k: v} -> {k: v} -> Boolean
 const containsID = R.eqProps('id');

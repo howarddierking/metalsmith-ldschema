@@ -4,18 +4,18 @@
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "dc": "http://purl.org/dc/elements/1.1/",
-    "@vocab": "http://schema.howarddierking.com",
-    "@base": "http://schema.howarddierking.com"
+    "@vocab": "http://schema.howarddierking.com/",
+    "@base": "http://schema.howarddierking.com/"
   },
   "@graph": [
     {
-      "@id": "/Collaborator",
+      "@id": "Collaborator",
       "@type": "rdfs:Class",
       "rdfs:label": "Collaborator",
       "rdfs:comment": "An agent who can perform work."
     },
     {
-      "@id": "/username",
+      "@id": "username",
       "@type": "rdf:Property",
       "rdfs:label": "username",
       "rdfs:comment": "A system-scoped identifier for an agent.",
@@ -23,19 +23,19 @@
         { "@id": "xsd:string" }
       ],
       "rdfs:domain": [
-        { "@id": "/Collaborator" }
+        { "@id": "Collaborator" }
       ]
     },
     {
-      "@id": "/assignments",
+      "@id": "assignments",
       "@type": "rdf:Property",
       "rdfs:label": "assignments",
       "rdfs:comment": "Zero or more units of work that are associated with an agent.",
       "rdfs:range": [
-        { "@id": "/Bug" }
+        { "@id": "Bug" }
       ],
       "rdfs:domain": [
-        { "@id": "/Collaborator" }
+        { "@id": "Collaborator" }
       ]
     }
   ]

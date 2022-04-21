@@ -1,8 +1,9 @@
 {
   "name": "metalsmith-ldschema",
-  "version": "2.2.1",
+  "version": "3.0.0",
   "description": "Metalsmith plugin for generating Web documentation for a linked data vocabulary. Inspired by https://schema.org",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "test": "npx mocha --recursive",
     "test:debug": "npx mocha inspect --recursive",
@@ -17,7 +18,8 @@
     "metalsmith",
     "rdf",
     "rdfs",
-    "json-ld"
+    "json-ld",
+    "turtle"
   ],
   "author": "Howard Dierking",
   "license": "Apache-2.0",
@@ -26,13 +28,14 @@
   },
   "homepage": "https://github.com/howarddierking/metalsmith-ldschema",
   "engines": {
-    "node": ">=10.16"
+    "node": ">=16"
   },
   "dependencies": {
-    "bluebird": "^3.7.2",
-    "jsonld": "^5.2.0",
+    "@rdfjs/namespace": "^2.0.0",
+    "clownface": "^1.5.1",
     "ramda": "^0.28.0",
-    "rdflib": "^2.2.19"
+    "rdf-ext": "^2.0.1",
+    "rdf-parse": "^2.0.0"
   },
   "devDependencies": {
     "chai": "^4.3.6",

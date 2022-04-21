@@ -4,19 +4,19 @@
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "dc": "http://purl.org/dc/elements/1.1/",
-    "@vocab": "http://schema.howarddierking.com",
-    "@base": "http://schema.howarddierking.com"
+    "@vocab": "http://schema.howarddierking.com/",
+    "@base": "http://schema.howarddierking.com/"
   },
   "@graph": [
     {
-      "@id": "/HumanCollaborator",
+      "@id": "HumanCollaborator",
       "@type": "rdfs:Class",
       "rdfs:label": "HumanCollaborator",
       "rdfs:comment": "A person who can perform work.",
-      "rdfs:subClassOf": { "@id": "/Collaborator" }
+      "rdfs:subClassOf": { "@id": "Collaborator" }
     },
     {
-      "@id": "/email",
+      "@id": "email",
       "@type": "rdf:Property",
       "rdfs:label": "email",
       "rdfs:comment": "An email address for contact.",
@@ -24,7 +24,7 @@
         { "@id": "xsd:string" }
       ],
       "rdfs:domain": [
-        { "@id": "/HumanCollaborator" }
+        { "@id": "HumanCollaborator" }
       ]
     }
   ]
