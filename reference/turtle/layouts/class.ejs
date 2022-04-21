@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%=base%></title>
+
+  <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+      body{
+        padding-top: 65px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="<%=base%>" class="navbar-brand">My Schema Site</a>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1><%=term.out(ns.rdfs`label`).value %></h1>
+          <p><%=term.out(ns.rdfs`label`).comment %></p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <!-- TODO: recurse up the hierarchy as soon as there aren't a bunch of blank nodes/property constraints confusing the landscape -->
+          <h3>Parent class(es)</h3>
+          <ul>
+            <% term.out(ns.rdfs`subClassOf`).forEach(c => { %>
+            <li><a href="<%=c.value%>"><%= c.out(ns.rdfs`label`).value %></a></li>
+            <% }) %> 
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <!-- properties -->
+          <!-- property | expected type | description -->
+          <!-- properties from parent (recurse up) -->
+          <h3>Properties</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Expected Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+
+            <!-- Iterate This Class: TODO: change to schema:domainIncludes and schema:rangeIncludes -->
+
+
+            <% function renderClassProperties(classPtr){ %>
+            <tr class="bg-info">
+              <td colspan="3">Properties From <a href="/<%=basename(classPtr.value)%>"><%=classPtr.out(ns.rdfs`label`).value %></a></td>
+            </tr>
+            
+            <% classPtr.in(ns.rdfs`domain`).forEach(p => { %>
+            <tr>
+              <td><a href="/<%=basename(p.value)%>"><%=p.out(ns.rdfs`label`).value %></a></td>
+              <td>
+                <% p.out(ns.rdfs`range`).forEach(c => { %>
+                <a href="/<%=basename(c.value)%>"><%=c.out(ns.rdfs`label`).value %></a><br>
+                <%}) %>
+              </td>
+              <td><%=p.out(ns.rdfs`comment`).value %></td>
+            </tr>
+
+            <% classPtr.out(ns.rdfs`subClassOf`).forEach(c => { renderClassProperties(c) }) %>
+            <% }) %>
+            <% } %>
+
+            <% renderClassProperties(term) %>
+
+          </table>
+        </div>
+      </div>
+
+      <!-- Instances used as values for -->
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Instances may appear as values for the following properties</h3>
+          <ul>
+            <% term.in(ns.rdfs`range`).forEach(p => { %>
+            <li><a href="/<%=basename(p.value)%>"><%=p.out(ns.rdfs`label`).value %></a></li>
+            <% })%>
+          </ul>
+        </div>
+      </div>
+
+      <!-- more specific types -->
+      <div class="row">
+        <div class="col-md-12">              
+          <h3>More specific types</h3>
+          <ul>
+          <% term.in(ns.rdfs`subClassOf`).forEach(c => { %>
+          <li><a href="/<%=basename(c.value)%>"><%=c.out(ns.rdfs`label`).value %></a></li>
+          <% })%>        
+            
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="/components/jquery/dist/jquery.min.js"></script>
+    <script src="/components/bootstrap/dist/js/bootstrap.min.js"></script>
+  </body>
+  </html>

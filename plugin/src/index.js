@@ -1,78 +1,78 @@
-'use strict';
+import { Buffer } from 'buffer';
+import * as R from 'ramda';
+import * as path from 'path';
+import { getRdfFiles } from './fs.js';
+import { from as loadGraph} from './loader.js';  
+import clownface from 'clownface';
+import namespace from '@rdfjs/namespace';
 
-const R = require('ramda');
-const path = require('path');
-const metalsmithFs = require('./fs');
-const graph = require('./graph');
-
-const DEFAULT_INDEX_FILE = 'index.html';
-const DEFAULT_INDEX_LAYOUT = 'index.hbs';
-
-// (Object, String) -> String
-const DEFAULT_GET_LAYOUT = (options, typeName) => {
-    const DEFAULT_LAYOUT = 'layout.hbs';
-    const DEFAULT_CLASS_LAYOUT = 'class.hbs';
-    const DEFAULT_PROPERTY_LAYOUT = 'property.hbs';
-
-    if (typeName === graph.knownOntologies.RDFS('Class').value) {
-        return R.defaultTo(DEFAULT_CLASS_LAYOUT, options.classLayout);
-    }
-    if (typeName === graph.knownOntologies.RDF('Property').value) {
-        return R.defaultTo(DEFAULT_PROPERTY_LAYOUT, options.propertyLayout);
-    }
-    return DEFAULT_LAYOUT;
+const ns = {
+    schema: namespace('http://schema.org/'),
+    owl: namespace('http://www.w3.org/2002/07/owl#'),
+    rdf: namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#'),
+    xml: namespace('http://www.w3.org/XML/1998/namespace'),
+    xsd: namespace('http://www.w3.org/2001/XMLSchema#'),
+    rdfs: namespace('http://www.w3.org/2000/01/rdf-schema#'),
+    gist: namespace('https://ontologies.semanticarts.com/gist/'),
+    skos: namespace('http://www.w3.org/2004/02/skos/core#'),
+    skosxl: namespace('http://www.w3.org/2008/05/skos-xl#'),
+    dct: namespace('http://purl.org/dc/terms/'),
+    wd: namespace('http://www.wikidata.org/entity/'),
+    wdt: namespace('http://www.wikidata.org/prop/direct/')
 };
 
-// a-> Boolean
-const DEFAULT_IS_CLASS = R.pathEq(['type', [0]], graph.knownOntologies.RDFS('Class').value);
+const INDEX_FILENAME = 'index.html';
 
-// metalsmithFileFromViewModel: (String -> String) -> Term -> [String, File]
-const metalsmithFileFromViewModel = R.curry((options, getLayout, term) => {
-    const filename = `${path.basename(term.id[0])}.html`;
-    const fileContents = {
+
+const generateSite = R.curry(async (options, files, metalsmith, done) => {
+    if(!options.classLayout) throw new Error('options.classLayout is required');
+    if(!options.propertyLayout) throw new Error('options.propertyLayout is required');
+    if(!options.indexLayout) throw new Error('options.indexLayout is required');
+    if(!options.base) throw new Error('options.base is required');
+    
+    const rdfFiles = getRdfFiles(files);
+    const ds = await loadGraph(options, rdfFiles);
+
+    const ptr = clownface({dataset: ds});
+
+    const classes = ptr.has(ns.rdf`type`, [ns.rdfs`Class`, ns.owl`Class`]);
+
+    classes.forEach(p => {
+        const filename = `${path.basename(p.term.value)}.html`;
+        const fileDetails = {
+            base: options.base,
+            term: p,
+            ns,
+            basename: path.basename,
+            layout: options.classLayout,
+            contents: Buffer.from('')};
+        files[filename] = fileDetails;
+    });
+
+    const properties = ptr.has(ns.rdf`type`, [ns.rdf`Property`, ns.owl`DatatypeProperty`, ns.owl`ObjectProperty`]);
+
+    properties.forEach(p => {
+        const filename = `${path.basename(p.term.value)}.html`;
+        const fileDetails = {
+            base: options.base,
+            term: p,
+            ns,
+            basename: path.basename,
+            layout: options.propertyLayout,
+            contents: Buffer.from('')};
+        files[filename] = fileDetails;
+    });
+
+    files[INDEX_FILENAME] = {
         base: options.base,
-        term,
-        layout: getLayout(options, term.type[0]),
+        classes: classes,
+        ns,
+        basename: path.basename,
+        layout: options.indexLayout,
         contents: Buffer.from('')
     };
 
-    return [filename, fileContents];
+    setImmediate(done);
 });
 
-// pipeline
-// 1) files | pick rdf files | generate terms | add term files -> files
-// 2) files | pick all non-rdf files -> files
-const generateSite = R.curry((options, files, metalsmith, done) => {
-    const getLayout = R.defaultTo(DEFAULT_GET_LAYOUT, options.getLayout);
-    const rdfFiles = metalsmithFs.rdfFiles(files);
-
-    graph.from(rdfFiles).then(g => {
-        const vm = graph.termsFor(g, options.query, options.base);
-
-        // add a terms collection to each remaining file so that index pages, etc. can be created
-        const termFiles = R.pipe(
-            R.map(metalsmithFileFromViewModel(options, getLayout)),
-            R.fromPairs
-        )(vm);
-
-        // add termFiles to files
-        R.forEachObjIndexed((value, key) => {
-            files[key] = value; // eslint-disable-line no-param-reassign
-        }, termFiles);
-
-        const isClass = R.defaultTo(DEFAULT_IS_CLASS, options.isClass);
-
-        // add index to files
-        // eslint-disable-next-line no-param-reassign
-        files[DEFAULT_INDEX_FILE] = {
-            base: options.base,
-            classes: R.filter(isClass, vm),
-            layout: DEFAULT_INDEX_LAYOUT,
-            contents: Buffer.from('')
-        };
-
-        setImmediate(done);
-    });
-});
-
-module.exports = generateSite;
+export default generateSite;

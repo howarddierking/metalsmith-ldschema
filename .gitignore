@@ -38,6 +38,3 @@ jspm_packages
 
 # metalsmith site (build output) directory
 site
-
-# bower component directory
-components

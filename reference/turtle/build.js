@@ -1,21 +1,23 @@
-const metalsmith = require('metalsmith');
-const R = require('ramda');
-const layouts = require('metalsmith-layouts');
-const permalinks = require('metalsmith-permalinks')
-const serve = require('metalsmith-serve');
-const watch = require('metalsmith-watch');
-// const ldschema = require('metalsmith-ldschema');
-const ldschema = require('../../plugin/');
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import metalsmith from 'metalsmith';
+import * as R from 'ramda';
+import layouts from 'metalsmith-layouts';
+import permalinks from 'metalsmith-permalinks';
+import serve from 'metalsmith-serve';
+import watch from 'metalsmith-watch';
+import ldschema from '../../plugin/src/index.js';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 metalsmith(__dirname)
   .source('./src')
   .destination('./site')
   .use(ldschema({
-    classLayout: 'class.hbs',
-    propertyLayout: 'property.hbs',
-    indexLayout: 'index.hbs',
-    base: 'http://localhost:8080/'
+    classLayout: 'class.ejs',
+    propertyLayout: 'property.ejs',
+    indexLayout: 'index.ejs',
+    base: 'http://localhost:8080'
   }))
   .use(layouts())
   .use(permalinks({

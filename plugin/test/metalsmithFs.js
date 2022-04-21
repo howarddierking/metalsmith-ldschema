@@ -1,7 +1,6 @@
-'use strict';
-
-require('chai').should();
-const fsImpl = require('../src/fs');
+import * as fsImpl from '../src/fs.js';
+import {should} from 'chai';
+should();
 
 describe('metalsmithFs/impl', () => {
     describe('#hasFileExtension', () => {
@@ -23,7 +22,7 @@ describe('metalsmithFs/impl', () => {
         });
     });
 
-    describe('#rdfFiles', () => {
+    describe('#getRdfFiles', () => {
         it('should return subset of files matching RDF extensions', () => {
             const input = {
                 './src/file1.ttl': { data: 'some data' },
@@ -38,7 +37,7 @@ describe('metalsmithFs/impl', () => {
                 './src/file4.jsonld': { data: 'some data' }
             };
 
-            fsImpl.rdfFiles(input).should.deep.equal(expected);
+            fsImpl.getRdfFiles(input).should.deep.equal(expected);
         });
         it('should return an empty set if no files match RDF extensions', () => {
             const input = {
@@ -51,10 +50,10 @@ describe('metalsmithFs/impl', () => {
 
             const expected = {};
 
-            fsImpl.rdfFiles(input).should.deep.equal(expected);
+            fsImpl.getRdfFiles(input).should.deep.equal(expected);
         });
         it('should return an empty set if empty object supplied', () => {
-            fsImpl.rdfFiles({}).should.deep.equal({});
+            fsImpl.getRdfFiles({}).should.deep.equal({});
         });
     });
 
