@@ -46,10 +46,16 @@ To use, simply mount your metalsmith-ldschema project directory into `/project`,
 
 ```
 docker run -it \
-    -v "$(pwd):/project" \
-    -p 8080:8080 howarddierking/metalsmith-ldschema-host:latest \
-    "npm install && npm run build"
+  -v "$(pwd):/project" \
+  -p 8080:8080 \
+  --entrypoint="" \
+  --workdir="/project" \
+  node:lts-gallium \
+  sh -c "npm install && npm run build"
 ```
+
+
+
 
 ## Tests
 

@@ -1,7 +1,0 @@
-#!/bin/ash
-
-# copy files from working directory to a non-mounted directory so that commands can be executed in that context
-mkdir ~/project && cp -a ./. ~/project && cd ~/project
-
-# execute the user command
-eval "$1"
